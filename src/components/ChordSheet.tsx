@@ -1,36 +1,59 @@
-import type { Song, Section, Measure, Beat } from '../types';
+import type { Section, Measure, Beat } from '../types';
+import { useSongStore } from '../store/songStore';
+import { cn } from '../lib/utils';
 
-interface ChordSheetProps {
-    song: Song;
-}
+const BeatCell = ({
+    beat,
+    index,
+    sectionId,
+    measureId
+}: {
+    beat: Beat;
+    index: number;
+    sectionId: string;
+    measureId: string;
+}) => {
+    const { setEditingBeat } = useSongStore();
 
-const BeatCell = ({ beat, index }: { beat: Beat; index: number }) => {
     return (
-        <div className={`
-      relative p-2 border-r border-gray-700 last:border-r-0 min-h-[4rem] flex flex-col justify-center
-      ${index === 0 ? 'bg-gray-800/30' : ''}
-    `}>
-            <div className="text-xl font-bold text-white text-center">
-                {beat.chord || <span className="text-gray-600">-</span>}
+        <div
+            onClick={() => setEditingBeat({ sectionId, measureId, beatIndex: index })}
+            className={cn(
+                "relative p-2 border-r border-gray-700 last:border-r-0 min-h-[4rem] flex flex-col justify-center cursor-pointer hover:bg-gray-700/50 transition-colors group",
+                index === 0 && "bg-gray-800/30",
+            )}
+        >
+            <div className={cn(
+                "text-xl font-bold text-center",
+                beat.chord ? "text-white" : "text-gray-600"
+            )}>
+                {beat.chord || "-"}
             </div>
             {beat.lyric && (
                 <div className="text-xs text-gray-400 text-center mt-1 truncate">
                     {beat.lyric}
                 </div>
             )}
-            {/* Beat indicator for debugging or visual aid */}
-            <div className="absolute top-1 right-1 text-[10px] text-gray-700">
+
+            {/* Beat indicator */}
+            <div className="absolute top-1 right-1 text-[10px] text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">
                 {index + 1}
             </div>
         </div>
     );
 };
 
-const MeasureBlock = ({ measure }: { measure: Measure }) => {
+const MeasureBlock = ({ measure, sectionId }: { measure: Measure; sectionId: string }) => {
     return (
-        <div className="grid grid-cols-4 border border-gray-700 rounded bg-gray-800/50">
+        <div className="grid grid-cols-4 border border-gray-700 rounded bg-gray-800/50 overflow-hidden">
             {measure.beats.map((beat, idx) => (
-                <BeatCell key={`${measure.id}-beat-${idx}`} beat={beat} index={idx} />
+                <BeatCell
+                    key={`${measure.id}-beat-${idx}`}
+                    beat={beat}
+                    index={idx}
+                    sectionId={sectionId}
+                    measureId={measure.id}
+                />
             ))}
         </div>
     );
@@ -49,7 +72,7 @@ const SectionBlock = ({ section }: { section: Section }) => {
                 </div>
                 <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-2">
                     {section.measures.map((measure) => (
-                        <MeasureBlock key={measure.id} measure={measure} />
+                        <MeasureBlock key={measure.id} measure={measure} sectionId={section.id} />
                     ))}
                 </div>
             </div>
@@ -58,9 +81,11 @@ const SectionBlock = ({ section }: { section: Section }) => {
     );
 };
 
-export const ChordSheet = ({ song }: ChordSheetProps) => {
+export const ChordSheet = () => {
+    const song = useSongStore((state) => state.song);
+
     return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32">
             <div className="space-y-2">
                 {song.sections.map((section) => (
                     <SectionBlock key={section.id} section={section} />

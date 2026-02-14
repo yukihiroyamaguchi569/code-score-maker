@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Header } from './components/Header';
 import { ChordSheet } from './components/ChordSheet';
+import { ChordEditor } from './components/ChordEditor';
+import { useSongStore } from './store/songStore';
 import type { Song, Beat } from './types';
 
 // Helper to create empty beats
@@ -56,14 +58,20 @@ const SAMPLE_SONG: Song = {
 };
 
 function App() {
-  const [song] = useState<Song>(SAMPLE_SONG);
+  const { song, setSong } = useSongStore();
+
+  useEffect(() => {
+    // Initialize store with sample data
+    setSong(SAMPLE_SONG);
+  }, [setSong]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white font-sans selection:bg-indigo-500 selection:text-white">
       <Header song={song} />
       <main>
-        <ChordSheet song={song} />
+        <ChordSheet />
       </main>
+      <ChordEditor />
     </div>
   );
 }
