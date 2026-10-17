@@ -286,6 +286,14 @@ describe('saving', () => {
         expect(savedChord()).toBe('Cmaj7/Emaj7');
     });
 
+    it('keeps the caret after a maj7 typed in the middle', () => {
+        openEditor('C/E');
+        fireEvent.change(input(), { target: { value: 'Cmaj7/E', selectionStart: 5, selectionEnd: 5 } });
+        expect(input().value).toBe('CΔ7/E');
+        expect(input().selectionStart).toBe(3);
+        expect(input().selectionEnd).toBe(3);
+    });
+
     it('keeps one history entry for a maj7 chord saved again', () => {
         openEditor('Fmaj7', ['Fmaj7', 'G7']);
         click('Save');
