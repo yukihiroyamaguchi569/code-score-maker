@@ -278,6 +278,14 @@ describe('saving', () => {
         expect(store().chordHistory).toEqual(['Cmaj7']);
     });
 
+    it('shows a typed maj7 as Δ7 and saves it as maj7', () => {
+        openEditor('C');
+        type('Cmaj7/Emaj7');
+        expect(input().value).toBe('CΔ7/EΔ7');
+        click('Save');
+        expect(savedChord()).toBe('Cmaj7/Emaj7');
+    });
+
     it('keeps one history entry for a maj7 chord saved again', () => {
         openEditor('Fmaj7', ['Fmaj7', 'G7']);
         click('Save');

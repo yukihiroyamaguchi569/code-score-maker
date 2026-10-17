@@ -137,7 +137,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
                             ref={inputRef}
                             type="text"
                             value={chordInput}
-                            onChange={(e) => setChordInput(e.target.value)}
+                            onChange={(e) => setChordInput(toDisplayChord(e.target.value))}
                             onKeyDown={handleKeyDown}
                             className="w-full bg-black/40 border border-gray-600 rounded-lg px-4 py-4 text-3xl font-bold text-center text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase placeholder-gray-700 font-mono"
                             placeholder=""
