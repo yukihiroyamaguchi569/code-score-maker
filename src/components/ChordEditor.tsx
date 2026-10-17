@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSongStore } from '../store/songStore';
 import { X, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { toDisplayChord, toStoredChord } from '../lib/chordNotation';
+import { toDisplayChord, toDisplayOffset, toStoredChord } from '../lib/chordNotation';
 
 
 
@@ -54,9 +54,8 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value, selectionStart, selectionEnd } = e.target;
         const displayed = toDisplayChord(value);
-        const toDisplayedOffset = (offset: number) => toDisplayChord(value.slice(0, offset)).length;
         const converted = displayed !== value && selectionStart !== null && selectionEnd !== null;
-        setCaret(converted ? { start: toDisplayedOffset(selectionStart), end: toDisplayedOffset(selectionEnd) } : null);
+        setCaret(converted ? { start: toDisplayOffset(value, selectionStart), end: toDisplayOffset(value, selectionEnd) } : null);
         setChordInput(displayed);
     };
 

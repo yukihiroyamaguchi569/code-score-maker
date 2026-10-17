@@ -309,6 +309,12 @@ describe('saving', () => {
         expect(input().selectionEnd).toBe(5);
     });
 
+    it('keeps the caret at the end of Δ7 when it was inside the typed maj7', () => {
+        openEditor('C/E');
+        fireEvent.change(input(), { target: { value: 'Cmaj7/E', selectionStart: 4, selectionEnd: 4 } });
+        expect(input().selectionStart).toBe(3);
+    });
+
     it('does not reuse an old caret position on a later change', () => {
         openEditor('CΔ7');
         fireEvent.change(input(), { target: { value: 'Cmaj7', selectionStart: 5, selectionEnd: 5 } });
