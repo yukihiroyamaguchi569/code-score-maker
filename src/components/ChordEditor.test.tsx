@@ -222,7 +222,7 @@ describe('quality and tension buttons', () => {
         expect(input().value).toBe(expected);
     });
 
-    it.each([['Δ7'], ['7'], ['sus4'], ['add9'], ['13'], ['#11'], ['/ (On)']])(
+    it.each([['Δ7'], ['7'], ['sus4'], ['dim'], ['aug'], ['add9'], ['9'], ['11'], ['13'], ['#11'], ['b13'], ['/ (On)']])(
         'does not add %s again on the second click',
         (button) => {
             openEditor('C');
