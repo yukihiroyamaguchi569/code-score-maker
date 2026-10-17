@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { toggleMinor } from './chordInput';
+import { appendSuffix, toggleMinor } from './chordInput';
 
 describe('toggleMinor', () => {
     it.each([
@@ -51,5 +51,32 @@ describe('toggleMinor', () => {
 
     it.each([['C'], ['Am7'], ['CΔ7'], [''], ['Cmaj']])('returns "%s" after two toggles', (chord) => {
         expect(toggleMinor(toggleMinor(chord))).toBe(chord);
+    });
+});
+
+describe('appendSuffix', () => {
+    it.each([
+        ['C', '7', 'C7'],
+        ['C', 'Δ7', 'CΔ7'],
+        ['Cm', '7', 'Cm7'],
+        ['C7', '9', 'C79'],
+        ['C', '/', 'C/'],
+        ['', 'sus4', 'sus4'],
+        ['C11', '#11', 'C11#11'],
+    ])('appends: "%s" + %s -> "%s"', (chord, suffix, expected) => {
+        expect(appendSuffix(chord, suffix)).toBe(expected);
+    });
+
+    it.each([
+        ['C7', '7'],
+        ['CΔ7', 'Δ7'],
+        ['Csus4', 'sus4'],
+        ['Cadd9', 'add9'],
+        ['C7#11', '#11'],
+        ['Cb13', 'b13'],
+        ['C/', '/'],
+        ['7', '7'],
+    ])('does nothing when "%s" already ends with %s', (chord, suffix) => {
+        expect(appendSuffix(chord, suffix)).toBe(chord);
     });
 });

@@ -3,7 +3,7 @@ import { useSongStore } from '../store/songStore';
 import { X, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toDisplayChord, toStoredChord } from '../lib/chordNotation';
-import { toggleMinor } from '../lib/chordInput';
+import { appendSuffix, toggleMinor } from '../lib/chordInput';
 
 
 
@@ -102,18 +102,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     };
 
     const appendQuality = (q: string) => {
-        // Append to end. 
-        // If 'm' is clicked, and already has 'm', maybe toggle? 
-        // For now, simple append logic, but be smart about 'm' vs 'maj7'.
-
-        // Special handling for 'm' (minor) to be inserted after root/accidental but before others?
-        // Actually, chord symbols are [Root][Quality][Extensions].
-        // If user clicks "m", should we inject it?
-
-        // Let's just append for simplicity as requested, 
-        // but maybe replcae if it conflicts? e.g. clicking m then maj7.
-
-        setChordInput(prev => prev + q);
+        setChordInput(prev => appendSuffix(prev, q));
         inputRef.current?.focus();
     }
 

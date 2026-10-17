@@ -222,6 +222,24 @@ describe('quality and tension buttons', () => {
         expect(input().value).toBe(expected);
     });
 
+    it.each([['Δ7'], ['7'], ['sus4'], ['add9'], ['13'], ['#11'], ['/ (On)']])(
+        'does not add %s again on the second click',
+        (button) => {
+            openEditor('C');
+            click(button);
+            const once = input().value;
+            click(button);
+            expect(input().value).toBe(once);
+        },
+    );
+
+    it('still appends a different button after another', () => {
+        openEditor('C');
+        click('7');
+        click('9');
+        expect(input().value).toBe('C79');
+    });
+
     it('builds a slash chord by combining buttons', () => {
         openEditor('');
         click('C');
