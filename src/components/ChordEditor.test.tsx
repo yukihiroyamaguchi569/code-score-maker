@@ -94,6 +94,12 @@ describe('initial input', () => {
         expect(input().value).toBe('Am7');
     });
 
+    it('does not force the input to upper case, so m and M stay distinct', () => {
+        openEditor('Am7');
+        expect(input().className.split(/\s+/)).not.toContain('uppercase');
+        expect(input().value).toBe('Am7');
+    });
+
     it('focuses the input after 50ms', () => {
         vi.useFakeTimers();
         openEditor('C');
