@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSongStore } from '../store/songStore';
 import { X, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { toDisplayChord, toStoredChord } from '../lib/chordNotation';
+import { toDisplayChord, toDisplayOffset, toStoredChord } from '../lib/chordNotation';
+import { appendSuffix, toggleMinor } from '../lib/chordInput';
 
 
 
@@ -29,6 +30,13 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     const { setEditingBeat, updateBeat, addToHistory, chordHistory } = useSongStore();
     const [chordInput, setChordInput] = useState(() => toDisplayChord(readBeatChord(editingBeat)));
     const inputRef = useRef<HTMLInputElement>(null);
+    // Caret to restore after typed maj7 is replaced by Δ7 (the controlled value change moves it to the end).
+    // A new object per change, so the effect runs even when the converted text equals the current input.
+    const [caret, setCaret] = useState<{ start: number; end: number } | null>(null);
+
+    useLayoutEffect(() => {
+        if (caret) inputRef.current?.setSelectionRange(caret.start, caret.end);
+    }, [caret]);
 
     useEffect(() => {
         setTimeout(() => inputRef.current?.focus(), 50);
@@ -42,6 +50,14 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
             if (valueToSave) addToHistory(valueToSave);
             setEditingBeat(null);
         }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, selectionStart, selectionEnd } = e.target;
+        const displayed = toDisplayChord(value);
+        const converted = displayed !== value && selectionStart !== null && selectionEnd !== null;
+        setCaret(converted ? { start: toDisplayOffset(value, selectionStart), end: toDisplayOffset(value, selectionEnd) } : null);
+        setChordInput(displayed);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -95,19 +111,13 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
         inputRef.current?.focus();
     };
 
+    const handleMinorClick = () => {
+        setChordInput(prev => toggleMinor(prev));
+        inputRef.current?.focus();
+    };
+
     const appendQuality = (q: string) => {
-        // Append to end. 
-        // If 'm' is clicked, and already has 'm', maybe toggle? 
-        // For now, simple append logic, but be smart about 'm' vs 'maj7'.
-
-        // Special handling for 'm' (minor) to be inserted after root/accidental but before others?
-        // Actually, chord symbols are [Root][Quality][Extensions].
-        // If user clicks "m", should we inject it?
-
-        // Let's just append for simplicity as requested, 
-        // but maybe replcae if it conflicts? e.g. clicking m then maj7.
-
-        setChordInput(prev => prev + q);
+        setChordInput(prev => appendSuffix(prev, q));
         inputRef.current?.focus();
     }
 
@@ -137,9 +147,9 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
                             ref={inputRef}
                             type="text"
                             value={chordInput}
-                            onChange={(e) => setChordInput(toDisplayChord(e.target.value))}
+                            onChange={handleInputChange}
                             onKeyDown={handleKeyDown}
-                            className="w-full bg-black/40 border border-gray-600 rounded-lg px-4 py-4 text-3xl font-bold text-center text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase placeholder-gray-700 font-mono"
+                            className="w-full bg-black/40 border border-gray-600 rounded-lg px-4 py-4 text-3xl font-bold text-center text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none placeholder-gray-700 font-mono"
                             placeholder=""
                         />
                     </div>
@@ -192,7 +202,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
 
                             <div className="flex flex-wrap gap-2 mb-2">
                                 {/* Minor is special */}
-                                <button onClick={() => appendQuality('m')} className="px-4 py-2 bg-gray-800 hover:bg-indigo-600 border border-gray-700 rounded text-white font-bold">
+                                <button onClick={handleMinorClick} className="px-4 py-2 bg-gray-800 hover:bg-indigo-600 border border-gray-700 rounded text-white font-bold">
                                     m
                                 </button>
                                 {QUALITIES.map(q => (

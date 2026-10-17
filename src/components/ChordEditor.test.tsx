@@ -94,6 +94,12 @@ describe('initial input', () => {
         expect(input().value).toBe('Am7');
     });
 
+    it('does not force the input to upper case, so m and M stay distinct', () => {
+        openEditor('Am7');
+        expect(input().className.split(/\s+/)).not.toContain('uppercase');
+        expect(input().value).toBe('Am7');
+    });
+
     it('focuses the input after 50ms', () => {
         vi.useFakeTimers();
         openEditor('C');
@@ -203,12 +209,41 @@ describe('quality and tension buttons', () => {
         expect(input().value).toBe(expected);
     });
 
-    it('appends in click order without deduplication', () => {
+    it('removes m on the second click', () => {
         openEditor('');
         click('m');
         click('m');
         click('7');
-        expect(input().value).toBe('mm7');
+        expect(input().value).toBe('7');
+    });
+
+    it.each([
+        ['Am7', 'A7'],
+        ['C#', 'C#m'],
+        ['CΔ7', 'CmΔ7'],
+        ['Cm/E', 'C/E'],
+    ])('button m toggles m after the root: "%s" -> "%s"', (initial, expected) => {
+        openEditor(initial);
+        click('m');
+        expect(input().value).toBe(expected);
+    });
+
+    it.each([['Δ7'], ['7'], ['sus4'], ['dim'], ['aug'], ['add9'], ['9'], ['11'], ['13'], ['#11'], ['b13'], ['/ (On)']])(
+        'does not add %s again on the second click',
+        (button) => {
+            openEditor('C');
+            click(button);
+            const once = input().value;
+            click(button);
+            expect(input().value).toBe(once);
+        },
+    );
+
+    it('still appends a different button after another', () => {
+        openEditor('C');
+        click('7');
+        click('9');
+        expect(input().value).toBe('C79');
     });
 
     it('builds a slash chord by combining buttons', () => {
@@ -284,6 +319,43 @@ describe('saving', () => {
         expect(input().value).toBe('CΔ7/EΔ7');
         click('Save');
         expect(savedChord()).toBe('Cmaj7/Emaj7');
+    });
+
+    it('keeps the caret after a maj7 typed in the middle', () => {
+        openEditor('C/E');
+        fireEvent.change(input(), { target: { value: 'Cmaj7/E', selectionStart: 5, selectionEnd: 5 } });
+        expect(input().value).toBe('CΔ7/E');
+        expect(input().selectionStart).toBe(3);
+        expect(input().selectionEnd).toBe(3);
+    });
+
+    it('keeps the caret when the converted text equals the current input', () => {
+        openEditor('CΔ7');
+        fireEvent.change(input(), { target: { value: 'Cmaj7', selectionStart: 5, selectionEnd: 5 } });
+        expect(input().value).toBe('CΔ7');
+        expect(input().selectionStart).toBe(3);
+    });
+
+    it('keeps a selection range across the conversion', () => {
+        openEditor('C/E');
+        fireEvent.change(input(), { target: { value: 'Cmaj7/E', selectionStart: 5, selectionEnd: 7 } });
+        expect(input().value).toBe('CΔ7/E');
+        expect(input().selectionStart).toBe(3);
+        expect(input().selectionEnd).toBe(5);
+    });
+
+    it('keeps the caret at the end of Δ7 when it was inside the typed maj7', () => {
+        openEditor('C/E');
+        fireEvent.change(input(), { target: { value: 'Cmaj7/E', selectionStart: 4, selectionEnd: 4 } });
+        expect(input().selectionStart).toBe(3);
+    });
+
+    it('does not reuse an old caret position on a later change', () => {
+        openEditor('CΔ7');
+        fireEvent.change(input(), { target: { value: 'Cmaj7', selectionStart: 5, selectionEnd: 5 } });
+        fireEvent.change(input(), { target: { value: 'CΔ79', selectionStart: 4, selectionEnd: 4 } });
+        expect(input().value).toBe('CΔ79');
+        expect(input().selectionStart).toBe(4);
     });
 
     it('keeps one history entry for a maj7 chord saved again', () => {
