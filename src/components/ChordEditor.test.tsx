@@ -263,11 +263,25 @@ describe('saving', () => {
         expect(store().editingBeat).toBeNull();
     });
 
-    it('saves the displayed Δ7 form, not the original maj7', () => {
+    it('saves the displayed Δ7 back as maj7', () => {
         openEditor('Bbmaj7');
         click('Save');
-        expect(savedChord()).toBe('BbΔ7');
-        expect(store().chordHistory).toEqual(['BbΔ7']);
+        expect(savedChord()).toBe('Bbmaj7');
+        expect(store().chordHistory).toEqual(['Bbmaj7']);
+    });
+
+    it('saves a typed Δ7 as maj7', () => {
+        openEditor('C');
+        type('CΔ7');
+        click('Save');
+        expect(savedChord()).toBe('Cmaj7');
+        expect(store().chordHistory).toEqual(['Cmaj7']);
+    });
+
+    it('keeps one history entry for a maj7 chord saved again', () => {
+        openEditor('Fmaj7', ['Fmaj7', 'G7']);
+        click('Save');
+        expect(store().chordHistory).toEqual(['Fmaj7', 'G7']);
     });
 
     it('saves an empty chord but does not add it to history', () => {

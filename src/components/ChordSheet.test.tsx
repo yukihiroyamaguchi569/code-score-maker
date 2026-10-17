@@ -39,18 +39,23 @@ describe('ChordSheet', () => {
         expect(screen.getAllByRole('heading').map((h) => h.textContent)).toEqual(['Intro', 'A']);
     });
 
-    it('shows chords as stored (no Δ7 conversion) and "-" for empty beats', () => {
+    it('shows maj7 as Δ7 and "-" for empty beats', () => {
         render(<ChordSheet />);
-        expect(screen.getByText('Cmaj7')).toBeTruthy();
-        expect(screen.queryByText('CΔ7')).toBeNull();
+        expect(screen.getByText('CΔ7')).toBeTruthy();
+        expect(screen.queryByText('Cmaj7')).toBeNull();
         expect(screen.getAllByText('-')).toHaveLength(4);
+    });
+
+    it('shows maj7 as Δ7 without changing the stored chord', () => {
+        render(<ChordSheet />);
+        expect(useSongStore.getState().song.sections[0].measures[0].beats[0].chord).toBe('Cmaj7');
     });
 
     it('shows lyrics only where present', () => {
         render(<ChordSheet />);
         expect(screen.getByText('Some')).toBeTruthy();
         // Cell text = chord + lyric (if any) + beat number indicator
-        expect(screen.getByText('Cmaj7').parentElement?.textContent).toBe('Cmaj7Some1');
+        expect(screen.getByText('CΔ7').parentElement?.textContent).toBe('CΔ7Some1');
         expect(screen.getByText('G7').parentElement?.textContent).toBe('G73');
     });
 

@@ -2,11 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useSongStore } from '../store/songStore';
 import { X, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
-
-// Helper to normalize chord display
-const normalizeChord = (chord: string) => {
-    return chord.replace(/maj7/g, 'Δ7');
-};
+import { toDisplayChord, toStoredChord } from '../lib/chordNotation';
 
 
 
@@ -31,7 +27,7 @@ export const ChordEditor = () => {
 
 const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     const { setEditingBeat, updateBeat, addToHistory, chordHistory } = useSongStore();
-    const [chordInput, setChordInput] = useState(() => normalizeChord(readBeatChord(editingBeat)));
+    const [chordInput, setChordInput] = useState(() => toDisplayChord(readBeatChord(editingBeat)));
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -40,11 +36,8 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
 
     const handleSave = () => {
         if (editingBeat) {
-            // Save as normalized "Δ7" if user prefers, or standard "maj7"?
-            // User asked for "notation to be Δ7". 
-            // If we save "Δ7", then our system uses that. 
-            // Let's save what the user sees/inputs.
-            const valueToSave = chordInput;
+            // Δ7 is display-only; the data keeps maj7
+            const valueToSave = toStoredChord(chordInput);
             updateBeat(editingBeat.sectionId, editingBeat.measureId, editingBeat.beatIndex, { chord: valueToSave });
             if (valueToSave) addToHistory(valueToSave);
             setEditingBeat(null);
@@ -60,7 +53,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     };
 
     const handleHistoryClick = (chord: string) => {
-        setChordInput(normalizeChord(chord));
+        setChordInput(toDisplayChord(chord));
         inputRef.current?.focus();
     };
 
@@ -162,7 +155,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
                                         onClick={() => handleHistoryClick(chord)}
                                         className="px-3 py-1.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-sm font-medium text-indigo-300 rounded transition-colors"
                                     >
-                                        {normalizeChord(chord)}
+                                        {toDisplayChord(chord)}
                                     </button>
                                 ))}
                             </div>
