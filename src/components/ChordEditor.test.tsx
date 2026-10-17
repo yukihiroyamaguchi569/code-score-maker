@@ -234,10 +234,10 @@ describe('history', () => {
         expect(buttons.map((b) => b.textContent)).toEqual(['FΔ7', 'G7', 'Am']);
     });
 
-    it('puts the raw stored chord into the input when clicked', () => {
+    it('puts the chord into the input as shown on the button (maj7 as Δ7)', () => {
         openEditor('C', ['Fmaj7']);
         click('FΔ7');
-        expect(input().value).toBe('Fmaj7');
+        expect(input().value).toBe('FΔ7');
     });
 });
 
