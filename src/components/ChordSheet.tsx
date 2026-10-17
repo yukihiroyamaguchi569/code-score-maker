@@ -1,6 +1,7 @@
 import type { Section, Measure, Beat } from '../types';
 import { useSongStore } from '../store/songStore';
 import { cn } from '../lib/utils';
+import { toDisplayChord } from '../lib/chordNotation';
 
 const BeatCell = ({
     beat,
@@ -27,7 +28,7 @@ const BeatCell = ({
                 "text-xl font-bold text-center",
                 beat.chord ? "text-white" : "text-gray-600"
             )}>
-                {beat.chord || "-"}
+                {beat.chord ? toDisplayChord(beat.chord) : "-"}
             </div>
             {beat.lyric && (
                 <div className="text-xs text-gray-400 text-center mt-1 truncate">
