@@ -29,14 +29,13 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     const { setEditingBeat, updateBeat, addToHistory, chordHistory } = useSongStore();
     const [chordInput, setChordInput] = useState(() => toDisplayChord(readBeatChord(editingBeat)));
     const inputRef = useRef<HTMLInputElement>(null);
-    // Caret to restore after typed maj7 is replaced by Δ7 (the controlled value change moves it to the end)
-    const pendingCaret = useRef<number | null>(null);
+    // Caret to restore after typed maj7 is replaced by Δ7 (the controlled value change moves it to the end).
+    // A new object per change, so the effect runs even when the converted text equals the current input.
+    const [caret, setCaret] = useState<{ position: number } | null>(null);
 
     useLayoutEffect(() => {
-        if (pendingCaret.current === null) return;
-        inputRef.current?.setSelectionRange(pendingCaret.current, pendingCaret.current);
-        pendingCaret.current = null;
-    }, [chordInput]);
+        if (caret) inputRef.current?.setSelectionRange(caret.position, caret.position);
+    }, [caret]);
 
     useEffect(() => {
         setTimeout(() => inputRef.current?.focus(), 50);
@@ -55,9 +54,8 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value, selectionStart } = e.target;
         const displayed = toDisplayChord(value);
-        if (displayed !== value && selectionStart !== null) {
-            pendingCaret.current = toDisplayChord(value.slice(0, selectionStart)).length;
-        }
+        const converted = displayed !== value && selectionStart !== null;
+        setCaret(converted ? { position: toDisplayChord(value.slice(0, selectionStart)).length } : null);
         setChordInput(displayed);
     };
 

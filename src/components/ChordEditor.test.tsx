@@ -294,6 +294,21 @@ describe('saving', () => {
         expect(input().selectionEnd).toBe(3);
     });
 
+    it('keeps the caret when the converted text equals the current input', () => {
+        openEditor('CΔ7');
+        fireEvent.change(input(), { target: { value: 'Cmaj7', selectionStart: 5, selectionEnd: 5 } });
+        expect(input().value).toBe('CΔ7');
+        expect(input().selectionStart).toBe(3);
+    });
+
+    it('does not reuse an old caret position on a later change', () => {
+        openEditor('CΔ7');
+        fireEvent.change(input(), { target: { value: 'Cmaj7', selectionStart: 5, selectionEnd: 5 } });
+        fireEvent.change(input(), { target: { value: 'CΔ79', selectionStart: 4, selectionEnd: 4 } });
+        expect(input().value).toBe('CΔ79');
+        expect(input().selectionStart).toBe(4);
+    });
+
     it('keeps one history entry for a maj7 chord saved again', () => {
         openEditor('Fmaj7', ['Fmaj7', 'G7']);
         click('Save');
