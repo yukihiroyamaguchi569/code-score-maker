@@ -301,6 +301,14 @@ describe('saving', () => {
         expect(input().selectionStart).toBe(3);
     });
 
+    it('keeps a selection range across the conversion', () => {
+        openEditor('C/E');
+        fireEvent.change(input(), { target: { value: 'Cmaj7/E', selectionStart: 5, selectionEnd: 7 } });
+        expect(input().value).toBe('CΔ7/E');
+        expect(input().selectionStart).toBe(3);
+        expect(input().selectionEnd).toBe(5);
+    });
+
     it('does not reuse an old caret position on a later change', () => {
         openEditor('CΔ7');
         fireEvent.change(input(), { target: { value: 'Cmaj7', selectionStart: 5, selectionEnd: 5 } });

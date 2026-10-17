@@ -31,10 +31,10 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     // Caret to restore after typed maj7 is replaced by Δ7 (the controlled value change moves it to the end).
     // A new object per change, so the effect runs even when the converted text equals the current input.
-    const [caret, setCaret] = useState<{ position: number } | null>(null);
+    const [caret, setCaret] = useState<{ start: number; end: number } | null>(null);
 
     useLayoutEffect(() => {
-        if (caret) inputRef.current?.setSelectionRange(caret.position, caret.position);
+        if (caret) inputRef.current?.setSelectionRange(caret.start, caret.end);
     }, [caret]);
 
     useEffect(() => {
@@ -52,10 +52,11 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { value, selectionStart } = e.target;
+        const { value, selectionStart, selectionEnd } = e.target;
         const displayed = toDisplayChord(value);
-        const converted = displayed !== value && selectionStart !== null;
-        setCaret(converted ? { position: toDisplayChord(value.slice(0, selectionStart)).length } : null);
+        const toDisplayedOffset = (offset: number) => toDisplayChord(value.slice(0, offset)).length;
+        const converted = displayed !== value && selectionStart !== null && selectionEnd !== null;
+        setCaret(converted ? { start: toDisplayedOffset(selectionStart), end: toDisplayedOffset(selectionEnd) } : null);
         setChordInput(displayed);
     };
 
