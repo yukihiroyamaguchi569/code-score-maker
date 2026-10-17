@@ -10,26 +10,33 @@ const normalizeChord = (chord: string) => {
 
 
 
+type EditingBeat = NonNullable<ReturnType<typeof useSongStore.getState>['editingBeat']>;
+
+const readBeatChord = ({ sectionId, measureId, beatIndex }: EditingBeat) => {
+    const state = useSongStore.getState();
+    const section = state.song.sections.find(s => s.id === sectionId);
+    const measure = section?.measures.find(m => m.id === measureId);
+    const beat = measure?.beats[beatIndex];
+    return beat?.chord || "";
+};
+
 export const ChordEditor = () => {
-    const { editingBeat, setEditingBeat, updateBeat, addToHistory, chordHistory } = useSongStore();
-    const [chordInput, setChordInput] = useState("");
+    const editingBeat = useSongStore(state => state.editingBeat);
+    if (!editingBeat) return null;
+
+    // Remount the dialog per beat so its input state starts from that beat's chord
+    const { sectionId, measureId, beatIndex } = editingBeat;
+    return <ChordEditorDialog key={`${sectionId}/${measureId}/${beatIndex}`} editingBeat={editingBeat} />;
+};
+
+const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
+    const { setEditingBeat, updateBeat, addToHistory, chordHistory } = useSongStore();
+    const [chordInput, setChordInput] = useState(() => normalizeChord(readBeatChord(editingBeat)));
     const inputRef = useRef<HTMLInputElement>(null);
 
-    // Sync input with current beat chord when editor opens
     useEffect(() => {
-        if (editingBeat) {
-            const { sectionId, measureId, beatIndex } = editingBeat;
-            const state = useSongStore.getState();
-            const section = state.song.sections.find(s => s.id === sectionId);
-            const measure = section?.measures.find(m => m.id === measureId);
-            const beat = measure?.beats[beatIndex];
-            setChordInput(normalizeChord(beat?.chord || ""));
-
-            setTimeout(() => inputRef.current?.focus(), 50);
-        }
-    }, [editingBeat]);
-
-    if (!editingBeat) return null;
+        setTimeout(() => inputRef.current?.focus(), 50);
+    }, []);
 
     const handleSave = () => {
         if (editingBeat) {
