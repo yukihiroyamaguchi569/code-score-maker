@@ -3,6 +3,7 @@ import { useSongStore } from '../store/songStore';
 import { X, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toDisplayChord, toStoredChord } from '../lib/chordNotation';
+import { toggleMinor } from '../lib/chordInput';
 
 
 
@@ -92,6 +93,11 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
         }
 
         setChordInput(chordInput.replace(currentRoot, newRoot));
+        inputRef.current?.focus();
+    };
+
+    const handleMinorClick = () => {
+        setChordInput(prev => toggleMinor(prev));
         inputRef.current?.focus();
     };
 
@@ -192,7 +198,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
 
                             <div className="flex flex-wrap gap-2 mb-2">
                                 {/* Minor is special */}
-                                <button onClick={() => appendQuality('m')} className="px-4 py-2 bg-gray-800 hover:bg-indigo-600 border border-gray-700 rounded text-white font-bold">
+                                <button onClick={handleMinorClick} className="px-4 py-2 bg-gray-800 hover:bg-indigo-600 border border-gray-700 rounded text-white font-bold">
                                     m
                                 </button>
                                 {QUALITIES.map(q => (

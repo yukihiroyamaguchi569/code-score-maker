@@ -203,12 +203,23 @@ describe('quality and tension buttons', () => {
         expect(input().value).toBe(expected);
     });
 
-    it('appends in click order without deduplication', () => {
+    it('removes m on the second click', () => {
         openEditor('');
         click('m');
         click('m');
         click('7');
-        expect(input().value).toBe('mm7');
+        expect(input().value).toBe('7');
+    });
+
+    it.each([
+        ['Am7', 'A7'],
+        ['C#', 'C#m'],
+        ['CΔ7', 'CmΔ7'],
+        ['Cm/E', 'C/E'],
+    ])('button m toggles m after the root: "%s" -> "%s"', (initial, expected) => {
+        openEditor(initial);
+        click('m');
+        expect(input().value).toBe(expected);
     });
 
     it('builds a slash chord by combining buttons', () => {
