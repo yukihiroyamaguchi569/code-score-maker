@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useSongStore } from '../store/songStore';
 import { X, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { toDisplayChord, toStoredChord } from '../lib/chordNotation';
+import { toDisplayChord, toDisplayOffset, toStoredChord } from '../lib/chordNotation';
 import { toggleMinor } from '../lib/chordInput';
 
 
@@ -30,6 +30,13 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     const { setEditingBeat, updateBeat, addToHistory, chordHistory } = useSongStore();
     const [chordInput, setChordInput] = useState(() => toDisplayChord(readBeatChord(editingBeat)));
     const inputRef = useRef<HTMLInputElement>(null);
+    // Caret to restore after typed maj7 is replaced by Δ7 (the controlled value change moves it to the end).
+    // A new object per change, so the effect runs even when the converted text equals the current input.
+    const [caret, setCaret] = useState<{ start: number; end: number } | null>(null);
+
+    useLayoutEffect(() => {
+        if (caret) inputRef.current?.setSelectionRange(caret.start, caret.end);
+    }, [caret]);
 
     useEffect(() => {
         setTimeout(() => inputRef.current?.focus(), 50);
@@ -43,6 +50,14 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
             if (valueToSave) addToHistory(valueToSave);
             setEditingBeat(null);
         }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, selectionStart, selectionEnd } = e.target;
+        const displayed = toDisplayChord(value);
+        const converted = displayed !== value && selectionStart !== null && selectionEnd !== null;
+        setCaret(converted ? { start: toDisplayOffset(value, selectionStart), end: toDisplayOffset(value, selectionEnd) } : null);
+        setChordInput(displayed);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -143,7 +158,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
                             ref={inputRef}
                             type="text"
                             value={chordInput}
-                            onChange={(e) => setChordInput(toDisplayChord(e.target.value))}
+                            onChange={handleInputChange}
                             onKeyDown={handleKeyDown}
                             className="w-full bg-black/40 border border-gray-600 rounded-lg px-4 py-4 text-3xl font-bold text-center text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none uppercase placeholder-gray-700 font-mono"
                             placeholder=""
