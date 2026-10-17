@@ -34,6 +34,17 @@ describe('toggleMinor', () => {
         expect(toggleMinor(chord)).toBe(chord.replace('maj', 'mmaj'));
     });
 
+    it.each([
+        ['Cma', 'Cmma'],
+        ['ma', 'mma'],
+    ])('does not treat a partly typed "ma" as minor: "%s" -> "%s"', (before, after) => {
+        expect(toggleMinor(before)).toBe(after);
+    });
+
+    it('treats the m of madd9 as minor', () => {
+        expect(toggleMinor('Cmadd9')).toBe('Cadd9');
+    });
+
     it('does not touch an m in the bass note', () => {
         expect(toggleMinor('C/Em')).toBe('Cm/Em');
     });
