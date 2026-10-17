@@ -60,7 +60,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     };
 
     const handleHistoryClick = (chord: string) => {
-        setChordInput(chord);
+        setChordInput(normalizeChord(chord));
         inputRef.current?.focus();
     };
 
