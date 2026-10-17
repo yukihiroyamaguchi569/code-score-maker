@@ -1,0 +1,819 @@
+{
+  "report": {
+    "schemaVersion": 1,
+    "root": ".",
+    "label": "-",
+    "profile": "app",
+    "stacks": [
+      "react",
+      "ts"
+    ],
+    "complete": true,
+    "size": {
+      "files": 14,
+      "sloc": 495,
+      "testSloc": 524
+    },
+    "dimensions": [
+      {
+        "dimension": "architecture",
+        "status": "experimental",
+        "score": 100,
+        "coverage": 1,
+        "metrics": [
+          {
+            "metric": "knip.unused_export_ratio",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 0.2
+            },
+            "weight": 0.3,
+            "points": 30
+          },
+          {
+            "metric": "knip.unused_file_ratio",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 0.3
+            },
+            "weight": 0.25,
+            "points": 25
+          },
+          {
+            "metric": "knip.unused_dependencies",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 10
+            },
+            "weight": 0.2,
+            "points": 20
+          },
+          {
+            "metric": "circular.cycle_count",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 8
+            },
+            "weight": 0.25,
+            "points": 25
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "0 suppressions in scope"
+      },
+      {
+        "dimension": "correctness",
+        "status": "experimental",
+        "score": 89.899,
+        "coverage": 1,
+        "metrics": [
+          {
+            "metric": "oxlint.errors_per_kloc",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 3
+            },
+            "weight": 0.6,
+            "density": true,
+            "points": 60
+          },
+          {
+            "metric": "oxlint.violations_per_kloc",
+            "value": 2.0202,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 8
+            },
+            "weight": 0.4,
+            "density": true,
+            "points": 29.899,
+            "topContributors": [
+              {
+                "file": "src/components/ChordEditor.test.tsx",
+                "value": 1
+              }
+            ]
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "0 suppressions in scope"
+      },
+      {
+        "dimension": "documentation",
+        "status": "experimental",
+        "score": 81.0371,
+        "coverage": 0.75,
+        "metrics": [
+          {
+            "metric": "readme-contract.has_readme",
+            "value": 1,
+            "state": "ok",
+            "scale": {
+              "good": 1,
+              "bad": 0
+            },
+            "weight": 0.35,
+            "points": 46.6667
+          },
+          {
+            "metric": "readme-contract.readme_words",
+            "value": 56,
+            "state": "ok",
+            "scale": {
+              "good": 120,
+              "bad": 30
+            },
+            "weight": 0.2,
+            "points": 7.7037
+          },
+          {
+            "metric": "readme-contract.documented_flag_ratio",
+            "value": 0,
+            "state": "skipped",
+            "scale": {
+              "good": 1,
+              "bad": 0.5
+            },
+            "weight": 0.25,
+            "points": 0
+          },
+          {
+            "metric": "comment-quality.marker_per_kloc",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 2
+            },
+            "weight": 0.2,
+            "density": true,
+            "points": 26.6667,
+            "topContributors": []
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "0 suppressions in scope"
+      },
+      {
+        "dimension": "integrity",
+        "status": "experimental",
+        "score": 82.2917,
+        "coverage": 1,
+        "metrics": [
+          {
+            "metric": "suppression-scan.source_per_kloc",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 5
+            },
+            "weight": 0.3,
+            "density": true,
+            "points": 30,
+            "topContributors": []
+          },
+          {
+            "metric": "suppression-scan.unreasoned_ratio",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 1
+            },
+            "weight": 0.2,
+            "points": 20
+          },
+          {
+            "metric": "suppression-scan.test_count",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 200
+            },
+            "weight": 0.1,
+            "points": 10
+          },
+          {
+            "metric": "config-integrity.gap_ratio",
+            "value": 0.125,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 0.6
+            },
+            "weight": 0.25,
+            "points": 19.7917
+          },
+          {
+            "metric": "ci-integrity.gap_ratio",
+            "value": 0.5,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 0.6
+            },
+            "weight": 0.15,
+            "points": 2.5
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "no suppression signal wired"
+      },
+      {
+        "dimension": "readability",
+        "status": "experimental",
+        "score": 94.8902,
+        "coverage": 1,
+        "metrics": [
+          {
+            "metric": "file-shape.sloc_p95",
+            "value": 206,
+            "state": "ok",
+            "scale": {
+              "good": 150,
+              "bad": 800
+            },
+            "weight": 0.3,
+            "points": 27.4154,
+            "topContributors": [
+              {
+                "file": "src/components/ChordEditor.tsx",
+                "value": 206
+              },
+              {
+                "file": "src/components/ChordSheet.tsx",
+                "value": 89
+              },
+              {
+                "file": "src/App.tsx",
+                "value": 73
+              },
+              {
+                "file": "src/store/songStore.ts",
+                "value": 53
+              },
+              {
+                "file": "src/components/Header.tsx",
+                "value": 44
+              }
+            ]
+          },
+          {
+            "metric": "file-shape.max_file_sloc",
+            "value": 206,
+            "state": "ok",
+            "scale": {
+              "good": 300,
+              "bad": 2000
+            },
+            "weight": 0.2,
+            "points": 20
+          },
+          {
+            "metric": "file-shape.god_file_count",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 20
+            },
+            "weight": 0.15,
+            "points": 15
+          },
+          {
+            "metric": "jscpd.duplicated_lines_pct",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 10
+            },
+            "weight": 0.2,
+            "points": 20,
+            "topContributors": []
+          },
+          {
+            "metric": "oxlint.violations_per_kloc",
+            "value": 2.0202,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 12
+            },
+            "weight": 0.15,
+            "density": true,
+            "points": 12.4748,
+            "topContributors": [
+              {
+                "file": "src/components/ChordEditor.test.tsx",
+                "value": 1
+              }
+            ]
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "0 suppressions in scope"
+      },
+      {
+        "dimension": "security",
+        "status": "experimental",
+        "score": 60,
+        "coverage": 1,
+        "metrics": [
+          {
+            "metric": "audit.critical",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 1
+            },
+            "weight": 0.4,
+            "points": 40
+          },
+          {
+            "metric": "audit.high",
+            "value": 16,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 5
+            },
+            "weight": 0.35,
+            "points": 0
+          },
+          {
+            "metric": "audit.moderate",
+            "value": 4,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 20
+            },
+            "weight": 0.25,
+            "points": 20
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "no suppression signal wired"
+      },
+      {
+        "dimension": "test-coverage",
+        "status": "experimental",
+        "score": 100,
+        "coverage": 1,
+        "metrics": [
+          {
+            "metric": "test-presence.test_to_source_ratio",
+            "value": 1.0586,
+            "state": "ok",
+            "scale": {
+              "good": 0.5,
+              "bad": 0.05
+            },
+            "weight": 0.3,
+            "points": 30
+          },
+          {
+            "metric": "coverage.line_pct",
+            "value": 91.3,
+            "state": "ok",
+            "scale": {
+              "good": 90,
+              "bad": 40
+            },
+            "weight": 0.3,
+            "points": 30
+          },
+          {
+            "metric": "coverage.branch_pct",
+            "value": 88.64,
+            "state": "ok",
+            "scale": {
+              "good": 85,
+              "bad": 30
+            },
+            "weight": 0.25,
+            "points": 25
+          },
+          {
+            "metric": "coverage.function_pct",
+            "value": 90.91,
+            "state": "ok",
+            "scale": {
+              "good": 90,
+              "bad": 40
+            },
+            "weight": 0.15,
+            "points": 15
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "0 suppressions in scope"
+      },
+      {
+        "dimension": "type-safety",
+        "status": "experimental",
+        "score": 100,
+        "coverage": 1,
+        "metrics": [
+          {
+            "metric": "source-mix.untyped_sloc_ratio",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 0.5
+            },
+            "weight": 0.3,
+            "points": 30
+          },
+          {
+            "metric": "source-mix.untyped_file_ratio",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 0.5
+            },
+            "weight": 0.2,
+            "points": 20,
+            "topContributors": []
+          },
+          {
+            "metric": "tsc.type_errors_per_kloc",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 2
+            },
+            "weight": 0.5,
+            "density": true,
+            "points": 50
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "0 suppressions in scope"
+      },
+      {
+        "dimension": "ui-consistency",
+        "status": "experimental",
+        "score": 100,
+        "coverage": 1,
+        "metrics": [
+          {
+            "metric": "ui-token.color_cardinality",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 20,
+              "bad": 120
+            },
+            "weight": 0.3,
+            "points": 30,
+            "topContributors": [
+              {
+                "file": "src/App.tsx",
+                "value": 0
+              },
+              {
+                "file": "src/main.tsx",
+                "value": 0
+              },
+              {
+                "file": "src/components/ChordEditor.tsx",
+                "value": 0
+              },
+              {
+                "file": "src/components/ChordSheet.tsx",
+                "value": 0
+              },
+              {
+                "file": "src/components/Header.tsx",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "metric": "ui-token.spacing_cardinality",
+            "value": 2,
+            "state": "ok",
+            "scale": {
+              "good": 10,
+              "bad": 60
+            },
+            "weight": 0.3,
+            "points": 30,
+            "topContributors": [
+              {
+                "file": "src/components/ChordSheet.tsx",
+                "value": 2
+              },
+              {
+                "file": "src/components/ChordEditor.tsx",
+                "value": 1
+              },
+              {
+                "file": "src/App.tsx",
+                "value": 0
+              },
+              {
+                "file": "src/main.tsx",
+                "value": 0
+              },
+              {
+                "file": "src/components/Header.tsx",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "metric": "ui-token.inline_style_per_kloc",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 10
+            },
+            "weight": 0.2,
+            "density": true,
+            "points": 20
+          },
+          {
+            "metric": "ui-token.style_block_ratio",
+            "value": 0,
+            "state": "ok",
+            "scale": {
+              "good": 0,
+              "bad": 0.6
+            },
+            "weight": 0.2,
+            "points": 20
+          }
+        ],
+        "confidence": "high",
+        "confidenceReason": "0 suppressions in scope"
+      }
+    ],
+    "metrics": {
+      "suppression-scan.source_count": 0,
+      "suppression-scan.test_count": 0,
+      "suppression-scan.source_per_kloc": 0,
+      "suppression-scan.unreasoned_source_count": 0,
+      "suppression-scan.unreasoned_ratio": 0,
+      "file-shape.sloc_p95": 206,
+      "file-shape.max_file_sloc": 206,
+      "file-shape.god_file_count": 0,
+      "file-shape.source_file_count": 7,
+      "file-shape.source_sloc": 495,
+      "source-mix.untyped_file_ratio": 0,
+      "source-mix.untyped_sloc_ratio": 0,
+      "source-mix.untyped_file_count": 0,
+      "source-mix.typed_file_count": 7,
+      "config-integrity.gap_ratio": 0.125,
+      "config-integrity.gap_count": 1,
+      "ci-integrity.gap_ratio": 0.5,
+      "ci-integrity.gap_count": 3,
+      "ci-integrity.workflow_count": 1,
+      "oxlint.violations_per_kloc": 2.0202,
+      "oxlint.violations": 1,
+      "oxlint.errors_per_kloc": 0,
+      "jscpd.duplicated_lines_pct": 0,
+      "jscpd.clone_count": 0,
+      "tsc.type_errors": 0,
+      "tsc.type_errors_per_kloc": 0,
+      "knip.unused_files": 0,
+      "knip.unused_file_ratio": 0,
+      "knip.unused_export_ratio": 0,
+      "knip.unused_exports": 0,
+      "knip.unused_dependencies": 0,
+      "audit.critical": 0,
+      "audit.high": 16,
+      "audit.moderate": 4,
+      "audit.low": 2,
+      "test-presence.test_to_source_ratio": 1.0586,
+      "test-presence.test_sloc": 524,
+      "test-presence.test_file_count": 3,
+      "coverage.line_pct": 91.3,
+      "coverage.branch_pct": 88.64,
+      "coverage.function_pct": 90.91,
+      "circular.cycle_count": 0,
+      "readme-contract.has_readme": 1,
+      "readme-contract.readme_words": 56,
+      "comment-quality.marker_per_kloc": 0,
+      "comment-quality.marker_count": 0,
+      "comment-quality.comment_density": 0.0774,
+      "ui-token.color_cardinality": 0,
+      "ui-token.spacing_cardinality": 2,
+      "ui-token.inline_style_per_kloc": 0,
+      "ui-token.style_block_ratio": 0,
+      "ui-token.ui_file_count": 5
+    },
+    "findings": [
+      {
+        "rule": "script-typecheck",
+        "severity": "warning",
+        "file": "package.json",
+        "line": 1,
+        "message": "No `typecheck` script",
+        "probe": "config-integrity",
+        "dimension": "integrity",
+        "tier": 0
+      },
+      {
+        "rule": "ci-step-lint",
+        "severity": "warning",
+        "file": "package.json",
+        "line": 1,
+        "message": "CI does not run `lint`",
+        "probe": "ci-integrity",
+        "dimension": "integrity",
+        "tier": 0
+      },
+      {
+        "rule": "ci-step-typecheck",
+        "severity": "warning",
+        "file": "package.json",
+        "line": 1,
+        "message": "CI does not run `typecheck`",
+        "probe": "ci-integrity",
+        "dimension": "integrity",
+        "tier": 0
+      },
+      {
+        "rule": "ci-step-build",
+        "severity": "warning",
+        "file": "package.json",
+        "line": 1,
+        "message": "CI does not run `build`",
+        "probe": "ci-integrity",
+        "dimension": "integrity",
+        "tier": 0
+      },
+      {
+        "rule": "oxlint/consistent-function-scoping",
+        "severity": "warning",
+        "file": "src/components/ChordEditor.test.tsx",
+        "line": 1,
+        "message": "Function `expectCancelled` does not capture any variables from its parent scope",
+        "probe": "oxlint",
+        "dimension": "correctness",
+        "tier": 0
+      }
+    ],
+    "probes": [
+      {
+        "probe": "suppression-scan",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "file-shape",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "source-mix",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "config-integrity",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "ci-integrity",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "oxlint",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": [
+          "oxlint"
+        ]
+      },
+      {
+        "probe": "jscpd",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": [
+          "jscpd"
+        ]
+      },
+      {
+        "probe": "tsc",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": [
+          "typescript"
+        ]
+      },
+      {
+        "probe": "knip",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": [
+          "knip"
+        ]
+      },
+      {
+        "probe": "audit",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": [
+          "npm"
+        ]
+      },
+      {
+        "probe": "test-presence",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "coverage",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "circular",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": [
+          "madge"
+        ]
+      },
+      {
+        "probe": "readme-contract",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "comment-quality",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      },
+      {
+        "probe": "ui-token",
+        "status": {
+          "kind": "ok"
+        },
+        "tools": []
+      }
+    ],
+    "toolVersions": {
+      "oxlint": "Version: 1.88.0",
+      "jscpd": "4.3.0",
+      "typescript": "5.9.3",
+      "knip": "6.41.0",
+      "npm": "11.19.1",
+      "madge": "8.0.0"
+    },
+    "overall": {
+      "score": 89.7909,
+      "scoredDimensions": 9,
+      "comparable": false
+    }
+  },
+  "createdAt": "2026-10-17T08:45:44.271Z"
+}
