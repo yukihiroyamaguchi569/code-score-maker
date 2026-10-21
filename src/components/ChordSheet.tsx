@@ -1,5 +1,5 @@
 import type { Section, Measure, Beat } from '../types';
-import { useSongStore } from '../store/songStore';
+import { selectCurrentSong, useSongStore } from '../store/songStore';
 import { cn } from '../lib/utils';
 import { toDisplayChord } from '../lib/chordNotation';
 
@@ -76,7 +76,7 @@ const SectionBlock = ({ section }: { section: Section }) => {
 };
 
 export const ChordSheet = () => {
-    const song = useSongStore((state) => state.song);
+    const song = useSongStore(selectCurrentSong);
 
     return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-32">
