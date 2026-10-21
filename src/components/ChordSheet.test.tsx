@@ -14,7 +14,9 @@ const SONG: Song = {
         {
             id: 's1',
             title: 'Intro',
-            measures: [{ id: 'm1', beats: [{ chord: 'Cmaj7', lyric: 'Some' }, { chord: '' }, { chord: 'G7' }, { chord: '' }] }],
+            measures: [
+                { id: 'm1', beats: [{ chord: 'Cmaj7', lyric: 'Some' }, { chord: '' }, { chord: 'G7' }, { chord: '' }] },
+            ],
         },
         {
             id: 's2',

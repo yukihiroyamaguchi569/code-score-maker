@@ -120,7 +120,15 @@ describe('candidate buttons', () => {
         const rootLabel = screen.getByText('Root');
         const rootButtons = within(rootLabel.parentElement as HTMLElement).getAllByRole('button');
         expect(rootButtons.map((b) => b.textContent)).toEqual([
-            'C', 'D', 'E', 'F', 'G', 'A', 'B', '♯ (Sharp)', '♭ (Flat)',
+            'C',
+            'D',
+            'E',
+            'F',
+            'G',
+            'A',
+            'B',
+            '♯ (Sharp)',
+            '♭ (Flat)',
         ]);
     });
 
@@ -129,8 +137,19 @@ describe('candidate buttons', () => {
         const label = screen.getByText('Quality & Extension');
         const buttons = within(label.parentElement as HTMLElement).getAllByRole('button');
         expect(buttons.map((b) => b.textContent?.trim())).toEqual([
-            'm', 'Δ7', '7', 'sus4', 'dim', 'aug', 'add9',
-            '9', '11', '13', '#11', 'b13', '/ (On)',
+            'm',
+            'Δ7',
+            '7',
+            'sus4',
+            'dim',
+            'aug',
+            'add9',
+            '9',
+            '11',
+            '13',
+            '#11',
+            'b13',
+            '/ (On)',
         ]);
     });
 });

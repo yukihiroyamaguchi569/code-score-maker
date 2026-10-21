@@ -5,20 +5,18 @@ import { cn } from '../lib/utils';
 import { toDisplayChord, toDisplayOffset, toStoredChord } from '../lib/chordNotation';
 import { appendSuffix, toggleMinor } from '../lib/chordInput';
 
-
-
 type EditingBeat = NonNullable<ReturnType<typeof useSongStore.getState>['editingBeat']>;
 
 const readBeatChord = ({ sectionId, measureId, beatIndex }: EditingBeat) => {
     const state = useSongStore.getState();
-    const section = state.song.sections.find(s => s.id === sectionId);
-    const measure = section?.measures.find(m => m.id === measureId);
+    const section = state.song.sections.find((s) => s.id === sectionId);
+    const measure = section?.measures.find((m) => m.id === measureId);
     const beat = measure?.beats[beatIndex];
-    return beat?.chord || "";
+    return beat?.chord || '';
 };
 
 export const ChordEditor = () => {
-    const editingBeat = useSongStore(state => state.editingBeat);
+    const editingBeat = useSongStore((state) => state.editingBeat);
     if (!editingBeat) return null;
 
     // Remount the dialog per beat so its input state starts from that beat's chord
@@ -56,7 +54,11 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
         const { value, selectionStart, selectionEnd } = e.target;
         const displayed = toDisplayChord(value);
         const converted = displayed !== value && selectionStart !== null && selectionEnd !== null;
-        setCaret(converted ? { start: toDisplayOffset(value, selectionStart), end: toDisplayOffset(value, selectionEnd) } : null);
+        setCaret(
+            converted
+                ? { start: toDisplayOffset(value, selectionStart), end: toDisplayOffset(value, selectionEnd) }
+                : null,
+        );
         setChordInput(displayed);
     };
 
@@ -112,35 +114,42 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     };
 
     const handleMinorClick = () => {
-        setChordInput(prev => toggleMinor(prev));
+        setChordInput((prev) => toggleMinor(prev));
         inputRef.current?.focus();
     };
 
     const appendQuality = (q: string) => {
-        setChordInput(prev => appendSuffix(prev, q));
+        setChordInput((prev) => appendSuffix(prev, q));
         inputRef.current?.focus();
-    }
+    };
 
-    const ROOTS = ["C", "D", "E", "F", "G", "A", "B"];
+    const ROOTS = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
     // "m" separate
     // "7, 9, 11 etc"
-    const QUALITIES = ["Δ7", "7", "sus4", "dim", "aug", "add9"];
-    const TENSIONS = ["9", "11", "13", "#11", "b13"];
+    const QUALITIES = ['Δ7', '7', 'sus4', 'dim', 'aug', 'add9'];
+    const TENSIONS = ['9', '11', '13', '#11', 'b13'];
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setEditingBeat(null)}>
-            <div className="bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
-
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+            onClick={() => setEditingBeat(null)}
+        >
+            <div
+                className="bg-gray-900 border border-gray-700 rounded-xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col max-h-[90vh]"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* Header */}
                 <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-800/50">
                     <h3 className="text-lg font-bold text-white">Edit Chord</h3>
-                    <button onClick={() => setEditingBeat(null)} className="text-gray-400 hover:text-white transition-colors">
+                    <button
+                        onClick={() => setEditingBeat(null)}
+                        className="text-gray-400 hover:text-white transition-colors"
+                    >
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 <div className="p-4 overflow-y-auto flex-1 space-y-6">
-
                     {/* Input Display */}
                     <div>
                         <input
@@ -157,7 +166,9 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
                     {/* History */}
                     {chordHistory.length > 0 && (
                         <div>
-                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Recently Used</div>
+                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">
+                                Recently Used
+                            </div>
                             <div className="flex flex-wrap gap-2">
                                 {chordHistory.map((chord, i) => (
                                     <button
@@ -175,15 +186,17 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
                     <div className="space-y-4">
                         {/* Roots */}
                         <div>
-                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Root</div>
+                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">
+                                Root
+                            </div>
                             <div className="grid grid-cols-7 gap-1 mb-2">
-                                {ROOTS.map(root => (
+                                {ROOTS.map((root) => (
                                     <button
                                         key={root}
                                         onClick={() => setRoot(root)}
                                         className={cn(
-                                            "aspect-square flex items-center justify-center rounded font-bold text-lg transition-colors",
-                                            "bg-gray-800 hover:bg-indigo-600 text-white border border-gray-700 hover:border-indigo-500"
+                                            'aspect-square flex items-center justify-center rounded font-bold text-lg transition-colors',
+                                            'bg-gray-800 hover:bg-indigo-600 text-white border border-gray-700 hover:border-indigo-500',
                                         )}
                                     >
                                         {root}
@@ -191,40 +204,65 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
                                 ))}
                             </div>
                             <div className="grid grid-cols-2 gap-2">
-                                <button onClick={() => toggleAccidental('#')} className="py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-white font-bold">♯ (Sharp)</button>
-                                <button onClick={() => toggleAccidental('b')} className="py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-white font-bold">♭ (Flat)</button>
+                                <button
+                                    onClick={() => toggleAccidental('#')}
+                                    className="py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-white font-bold"
+                                >
+                                    ♯ (Sharp)
+                                </button>
+                                <button
+                                    onClick={() => toggleAccidental('b')}
+                                    className="py-2 bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded text-white font-bold"
+                                >
+                                    ♭ (Flat)
+                                </button>
                             </div>
                         </div>
 
                         {/* Qualities & Tensions */}
                         <div>
-                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Quality & Extension</div>
+                            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">
+                                Quality & Extension
+                            </div>
 
                             <div className="flex flex-wrap gap-2 mb-2">
                                 {/* Minor is special */}
-                                <button onClick={handleMinorClick} className="px-4 py-2 bg-gray-800 hover:bg-indigo-600 border border-gray-700 rounded text-white font-bold">
+                                <button
+                                    onClick={handleMinorClick}
+                                    className="px-4 py-2 bg-gray-800 hover:bg-indigo-600 border border-gray-700 rounded text-white font-bold"
+                                >
                                     m
                                 </button>
-                                {QUALITIES.map(q => (
-                                    <button key={q} onClick={() => appendQuality(q)} className="px-3 py-2 bg-gray-800 hover:bg-indigo-600 border border-gray-700 rounded text-white font-medium">
+                                {QUALITIES.map((q) => (
+                                    <button
+                                        key={q}
+                                        onClick={() => appendQuality(q)}
+                                        className="px-3 py-2 bg-gray-800 hover:bg-indigo-600 border border-gray-700 rounded text-white font-medium"
+                                    >
                                         {q}
                                     </button>
                                 ))}
                             </div>
 
                             <div className="flex flex-wrap gap-2">
-                                {TENSIONS.map(t => (
-                                    <button key={t} onClick={() => appendQuality(t)} className="px-3 py-1.5 bg-gray-800/60 hover:bg-gray-700 border border-gray-700 rounded text-gray-300 text-sm">
+                                {TENSIONS.map((t) => (
+                                    <button
+                                        key={t}
+                                        onClick={() => appendQuality(t)}
+                                        className="px-3 py-1.5 bg-gray-800/60 hover:bg-gray-700 border border-gray-700 rounded text-gray-300 text-sm"
+                                    >
                                         {t}
                                     </button>
                                 ))}
-                                <button onClick={() => appendQuality('/')} className="px-3 py-1.5 bg-gray-800/60 hover:bg-gray-700 border border-gray-700 rounded text-gray-300 text-sm">
+                                <button
+                                    onClick={() => appendQuality('/')}
+                                    className="px-3 py-1.5 bg-gray-800/60 hover:bg-gray-700 border border-gray-700 rounded text-gray-300 text-sm"
+                                >
                                     / (On)
                                 </button>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div className="p-4 bg-gray-800/50 border-t border-gray-800 flex justify-end gap-3">

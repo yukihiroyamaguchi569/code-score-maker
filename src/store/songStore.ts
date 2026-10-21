@@ -23,11 +23,11 @@ const MAX_HISTORY = 10;
 
 // Initial empty song (will be overwritten by setSong or initial props if we change architecture)
 const INITIAL_SONG: Song = {
-    title: "",
-    artist: "",
+    title: '',
+    artist: '',
     bpm: 120,
-    key: "C",
-    sections: []
+    key: 'C',
+    sections: [],
 };
 
 export const useSongStore = create<SongState>((set) => ({
@@ -37,31 +37,33 @@ export const useSongStore = create<SongState>((set) => ({
 
     setSong: (song) => set({ song }),
 
-    updateBeat: (sectionId, measureId, beatIndex, newBeat) => set((state) => {
-        const newSections = state.song.sections.map((section) => {
-            if (section.id !== sectionId) return section;
+    updateBeat: (sectionId, measureId, beatIndex, newBeat) =>
+        set((state) => {
+            const newSections = state.song.sections.map((section) => {
+                if (section.id !== sectionId) return section;
 
-            const newMeasures = section.measures.map((measure) => {
-                if (measure.id !== measureId) return measure;
+                const newMeasures = section.measures.map((measure) => {
+                    if (measure.id !== measureId) return measure;
 
-                const newBeats = [...measure.beats];
-                if (newBeats[beatIndex]) {
-                    newBeats[beatIndex] = { ...newBeats[beatIndex], ...newBeat };
-                }
-                return { ...measure, beats: newBeats };
+                    const newBeats = [...measure.beats];
+                    if (newBeats[beatIndex]) {
+                        newBeats[beatIndex] = { ...newBeats[beatIndex], ...newBeat };
+                    }
+                    return { ...measure, beats: newBeats };
+                });
+
+                return { ...section, measures: newMeasures };
             });
 
-            return { ...section, measures: newMeasures };
-        });
-
-        return { song: { ...state.song, sections: newSections } };
-    }),
+            return { song: { ...state.song, sections: newSections } };
+        }),
 
     setEditingBeat: (editingBeat) => set({ editingBeat }),
 
-    addToHistory: (chord) => set((state) => {
-        if (!chord) return {};
-        const newHistory = [chord, ...state.chordHistory.filter(c => c !== chord)].slice(0, MAX_HISTORY);
-        return { chordHistory: newHistory };
-    }),
+    addToHistory: (chord) =>
+        set((state) => {
+            if (!chord) return {};
+            const newHistory = [chord, ...state.chordHistory.filter((c) => c !== chord)].slice(0, MAX_HISTORY);
+            return { chordHistory: newHistory };
+        }),
 }));
