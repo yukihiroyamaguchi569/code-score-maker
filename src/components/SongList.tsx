@@ -100,7 +100,11 @@ export const SongList = () => {
                 <div className="bg-indigo-600 p-2 rounded-lg">
                     <Music className="w-6 h-6 text-white" />
                 </div>
-                <h1 ref={headingRef} tabIndex={-1} className="text-xl font-bold text-white focus:outline-none">
+                <h1
+                    ref={headingRef}
+                    tabIndex={-1}
+                    className="text-xl font-bold text-white rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                >
                     曲の一覧
                 </h1>
             </div>

@@ -16,14 +16,6 @@ export const Header = ({ song, onBack }: HeaderProps) => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-4">
-                        <button
-                            type="button"
-                            onClick={onBack}
-                            aria-label="曲の一覧に戻る"
-                            className="p-2 hover:bg-gray-700 rounded-full transition-colors"
-                        >
-                            <ChevronLeft className="w-5 h-5 text-gray-300" />
-                        </button>
                         <div className="bg-indigo-600 p-2 rounded-lg">
                             <Music className="w-6 h-6 text-white" />
                         </div>
@@ -31,12 +23,21 @@ export const Header = ({ song, onBack }: HeaderProps) => {
                             <h1
                                 ref={headingRef}
                                 tabIndex={-1}
-                                className="text-xl font-bold text-white leading-tight focus:outline-none"
+                                className="text-xl font-bold text-white leading-tight rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
                             >
                                 {displayTitle(song.title)}
                             </h1>
                             <p className="text-sm text-gray-400">{song.artist}</p>
                         </div>
+                        {/* After the heading in DOM order so Tab from the focused heading reaches it; shown first. */}
+                        <button
+                            type="button"
+                            onClick={onBack}
+                            aria-label="曲の一覧に戻る"
+                            className="order-first p-2 hover:bg-gray-700 rounded-full transition-colors"
+                        >
+                            <ChevronLeft className="w-5 h-5 text-gray-300" />
+                        </button>
                     </div>
 
                     <div className="flex items-center gap-6">
