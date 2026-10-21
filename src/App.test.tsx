@@ -14,6 +14,11 @@ const renderFreshApp = async () => {
 
 const makeSong = (title: string, artist: string): Song => ({ title, artist, bpm: 90, key: 'F', sections: [] });
 
+const withChord = (song: Song, chord: string): Song => ({
+    ...song,
+    sections: [{ id: 's1', title: 'A', measures: [{ id: 'm1', beats: [{ chord }] }] }],
+});
+
 const saveLibrary = (songs: { id: string; song: Song }[], currentSongId: string) =>
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, songs, currentSongId }));
 
@@ -78,18 +83,25 @@ describe('App: moving between the list and a song', () => {
     beforeEach(() => {
         saveLibrary(
             [
-                { id: 'a', song: makeSong('First', 'Artist A') },
-                { id: 'b', song: makeSong('Second', 'Artist B') },
+                { id: 'a', song: withChord(makeSong('First', 'Artist A'), 'Dm7') },
+                { id: 'b', song: withChord(makeSong('Second', 'Artist B'), 'Am7') },
             ],
             'a',
         );
     });
 
-    it('opens the chosen song (not the saved current one) on the song screen', async () => {
+    it('marks the list as the main region', async () => {
+        await renderFreshApp();
+        expect(within(screen.getByRole('main')).getByRole('heading', { name: '曲の一覧' })).toBeTruthy();
+    });
+
+    it('opens the chosen song (not the saved current one) with its chord sheet', async () => {
         await renderFreshApp();
         fireEvent.click(songButtons()[1]);
 
         expect(screen.getByRole('heading', { name: 'Second' })).toBeTruthy();
+        expect(within(screen.getByRole('main')).getByText('Am7')).toBeTruthy();
+        expect(screen.queryByText('Dm7')).toBeNull();
         expect(screen.queryByRole('heading', { name: '曲の一覧' })).toBeNull();
     });
 

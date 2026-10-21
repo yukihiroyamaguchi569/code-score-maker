@@ -8,7 +8,7 @@ export const SongList = () => {
     const headingRef = useFocusOnMount<HTMLHeadingElement>();
 
     return (
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="flex items-center gap-4 mb-6">
                 <div className="bg-indigo-600 p-2 rounded-lg">
                     <Music className="w-6 h-6 text-white" />
@@ -38,6 +38,6 @@ export const SongList = () => {
                     </li>
                 ))}
             </ul>
-        </div>
+        </main>
     );
 };
