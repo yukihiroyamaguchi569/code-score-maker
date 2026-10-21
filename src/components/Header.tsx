@@ -1,6 +1,7 @@
 import { ChevronLeft, Music, Settings } from 'lucide-react';
 import type { Song } from '../types';
 import { useFocusOnMount } from '../lib/useFocusOnMount';
+import { displayTitle } from '../lib/songTitle';
 
 interface HeaderProps {
     song: Song;
@@ -32,7 +33,7 @@ export const Header = ({ song, onBack }: HeaderProps) => {
                                 tabIndex={-1}
                                 className="text-xl font-bold text-white leading-tight focus:outline-none"
                             >
-                                {song.title}
+                                {displayTitle(song.title)}
                             </h1>
                             <p className="text-sm text-gray-400">{song.artist}</p>
                         </div>

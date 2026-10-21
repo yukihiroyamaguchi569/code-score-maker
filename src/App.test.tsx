@@ -72,6 +72,14 @@ describe('App: song list (start screen)', () => {
         expect(songButtons()[0].textContent).toBe('（タイトルなし）');
     });
 
+    it('shows the same placeholder as the heading after opening an untitled song', async () => {
+        saveLibrary([{ id: 'x', song: makeSong('', '') }], 'x');
+        await renderFreshApp();
+        fireEvent.click(songButtons()[0]);
+
+        expect(document.activeElement).toBe(screen.getByRole('heading', { name: '（タイトルなし）' }));
+    });
+
     it('shows the sample song when localStorage holds a broken value', async () => {
         localStorage.setItem(STORAGE_KEY, '{broken');
         await renderFreshApp();

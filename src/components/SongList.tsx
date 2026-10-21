@@ -1,6 +1,7 @@
 import { ChevronRight, Music } from 'lucide-react';
 import { useSongStore } from '../store/songStore';
 import { useFocusOnMount } from '../lib/useFocusOnMount';
+import { displayTitle } from '../lib/songTitle';
 
 export const SongList = () => {
     const songs = useSongStore((state) => state.songs);
@@ -27,7 +28,7 @@ export const SongList = () => {
                         >
                             <span className="min-w-0">
                                 <span className="block text-lg font-bold text-white truncate">
-                                    {song.title || '（タイトルなし）'}
+                                    {displayTitle(song.title)}
                                 </span>
                                 {song.artist && (
                                     <span className="block text-sm text-gray-400 truncate">{song.artist}</span>
