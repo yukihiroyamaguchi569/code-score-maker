@@ -40,12 +40,14 @@ const DeleteConfirm = ({ title, isLastSong, onConfirm, onCancel }: DeleteConfirm
 
 interface SongRowProps {
     entry: SongEntry;
+    // Set when the row comes back from a cancelled delete, so focus returns to its delete button.
+    focusDelete: boolean;
     onOpen: () => void;
     onDuplicate: () => void;
     onDelete: () => void;
 }
 
-const SongRow = ({ entry: { song }, onOpen, onDuplicate, onDelete }: SongRowProps) => {
+const SongRow = ({ entry: { song }, focusDelete, onOpen, onDuplicate, onDelete }: SongRowProps) => {
     const title = displayTitle(song.title);
     return (
         <div className="flex items-center">
@@ -72,6 +74,7 @@ const SongRow = ({ entry: { song }, onOpen, onDuplicate, onDelete }: SongRowProp
             <button
                 type="button"
                 onClick={onDelete}
+                autoFocus={focusDelete}
                 aria-label={`「${title}」を削除`}
                 title="削除"
                 className="p-3 text-gray-400 hover:text-red-400 hover:bg-gray-700/50 transition-colors"
@@ -88,6 +91,7 @@ export const SongList = () => {
     const duplicateSong = useSongStore((state) => state.duplicateSong);
     const deleteSong = useSongStore((state) => state.deleteSong);
     const [confirmingId, setConfirmingId] = useState<string | null>(null);
+    const [cancelledId, setCancelledId] = useState<string | null>(null);
     const headingRef = useFocusOnMount<HTMLHeadingElement>();
 
     return (
@@ -110,12 +114,18 @@ export const SongList = () => {
                                 onConfirm={() => {
                                     deleteSong(entry.id);
                                     setConfirmingId(null);
+                                    // The focused button is gone with the row; land on the list heading.
+                                    headingRef.current?.focus();
                                 }}
-                                onCancel={() => setConfirmingId(null)}
+                                onCancel={() => {
+                                    setConfirmingId(null);
+                                    setCancelledId(entry.id);
+                                }}
                             />
                         ) : (
                             <SongRow
                                 entry={entry}
+                                focusDelete={cancelledId === entry.id}
                                 onOpen={() => openSong(entry.id)}
                                 onDuplicate={() => duplicateSong(entry.id)}
                                 onDelete={() => setConfirmingId(entry.id)}
