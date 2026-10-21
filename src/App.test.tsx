@@ -212,6 +212,32 @@ describe('App: deleting and duplicating songs in the list', () => {
         expect(localStorage.getItem(STORAGE_KEY)).toBe(before);
     });
 
+    it('returns focus to the delete button of the song when the deletion is cancelled', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「Second」を削除'));
+        fireEvent.click(button('キャンセル'));
+
+        expect(document.activeElement).toBe(button('「Second」を削除'));
+    });
+
+    it('returns focus to the delete button again after a second cancel on the same song', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「Second」を削除'));
+        fireEvent.click(button('キャンセル'));
+        fireEvent.click(button('「Second」を削除'));
+        fireEvent.click(button('キャンセル'));
+
+        expect(document.activeElement).toBe(button('「Second」を削除'));
+    });
+
+    it('moves focus to the list heading after a song is deleted', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「Second」を削除'));
+        fireEvent.click(button('削除する'));
+
+        expect(document.activeElement).toBe(screen.getByRole('heading', { name: '曲の一覧' }));
+    });
+
     it('shows only one confirmation at a time', async () => {
         await renderFreshApp();
         fireEvent.click(button('「First」を削除'));
