@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { ChordSheet } from './ChordSheet';
-import { useSongStore } from '../store/songStore';
+import { selectCurrentSong, useSongStore } from '../store/songStore';
 import type { Song } from '../types';
 
 const SONG: Song = {
@@ -50,7 +50,7 @@ describe('ChordSheet', () => {
 
     it('shows maj7 as Δ7 without changing the stored chord', () => {
         render(<ChordSheet />);
-        expect(useSongStore.getState().song.sections[0].measures[0].beats[0].chord).toBe('Cmaj7');
+        expect(selectCurrentSong(useSongStore.getState()).sections[0].measures[0].beats[0].chord).toBe('Cmaj7');
     });
 
     it('shows lyrics only where present', () => {

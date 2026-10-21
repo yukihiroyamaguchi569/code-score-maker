@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { useSongStore } from '../store/songStore';
+import { selectCurrentSong, useSongStore } from '../store/songStore';
 import { X, Check } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { toDisplayChord, toDisplayOffset, toStoredChord } from '../lib/chordNotation';
@@ -9,7 +9,7 @@ type EditingBeat = NonNullable<ReturnType<typeof useSongStore.getState>['editing
 
 const readBeatChord = ({ sectionId, measureId, beatIndex }: EditingBeat) => {
     const state = useSongStore.getState();
-    const section = state.song.sections.find((s) => s.id === sectionId);
+    const section = selectCurrentSong(state).sections.find((s) => s.id === sectionId);
     const measure = section?.measures.find((m) => m.id === measureId);
     const beat = measure?.beats[beatIndex];
     return beat?.chord || '';

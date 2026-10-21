@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { ChordEditor } from './ChordEditor';
-import { useSongStore } from '../store/songStore';
+import { selectCurrentSong, useSongStore } from '../store/songStore';
 import type { Song } from '../types';
 
 const makeSong = (chord: string): Song => ({
@@ -20,7 +20,7 @@ const makeSong = (chord: string): Song => ({
 });
 
 const store = () => useSongStore.getState();
-const savedChord = () => store().song.sections[0].measures[0].beats[0].chord;
+const savedChord = () => selectCurrentSong(store()).sections[0].measures[0].beats[0].chord;
 const input = () => screen.getByRole<HTMLInputElement>('textbox');
 const click = (name: string) => fireEvent.click(screen.getByRole('button', { name }));
 const type = (value: string) => fireEvent.change(input(), { target: { value } });
@@ -302,7 +302,7 @@ describe('saving', () => {
         fireEvent.keyDown(input(), { key: 'Enter' });
 
         expect(savedChord()).toBe('Dm7');
-        expect(store().song.sections[0].measures[0].beats[0].lyric).toBe('la');
+        expect(selectCurrentSong(store()).sections[0].measures[0].beats[0].lyric).toBe('la');
         expect(store().chordHistory).toEqual(['Dm7']);
         expect(store().editingBeat).toBeNull();
         expect(screen.queryByRole('textbox')).toBeNull();
@@ -396,7 +396,7 @@ describe('saving', () => {
         openEditor('C');
         type('E');
         click('Save');
-        const beats = store().song.sections[0].measures[0].beats;
+        const beats = selectCurrentSong(store()).sections[0].measures[0].beats;
         expect(beats.map((b) => b.chord)).toEqual(['E', 'G', '', '']);
     });
 
