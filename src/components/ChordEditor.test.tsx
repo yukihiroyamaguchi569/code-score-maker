@@ -120,7 +120,15 @@ describe('candidate buttons', () => {
         const rootLabel = screen.getByText('Root');
         const rootButtons = within(rootLabel.parentElement as HTMLElement).getAllByRole('button');
         expect(rootButtons.map((b) => b.textContent)).toEqual([
-            'C', 'D', 'E', 'F', 'G', 'A', 'B', '♯ (Sharp)', '♭ (Flat)',
+            'C',
+            'D',
+            'E',
+            'F',
+            'G',
+            'A',
+            'B',
+            '♯ (Sharp)',
+            '♭ (Flat)',
         ]);
     });
 
@@ -129,8 +137,19 @@ describe('candidate buttons', () => {
         const label = screen.getByText('Quality & Extension');
         const buttons = within(label.parentElement as HTMLElement).getAllByRole('button');
         expect(buttons.map((b) => b.textContent?.trim())).toEqual([
-            'm', 'Δ7', '7', 'sus4', 'dim', 'aug', 'add9',
-            '9', '11', '13', '#11', 'b13', '/ (On)',
+            'm',
+            'Δ7',
+            '7',
+            'sus4',
+            'dim',
+            'aug',
+            'add9',
+            '9',
+            '11',
+            '13',
+            '#11',
+            'b13',
+            '/ (On)',
         ]);
     });
 });
@@ -391,40 +410,26 @@ describe('saving', () => {
 });
 
 describe('cancelling', () => {
-    const expectCancelled = () => {
+    // Assertions sit in the test body (not a helper) so sonarjs/assertions-in-tests can see them.
+    it.each<[string, (container: HTMLElement) => void]>([
+        ['on Escape without saving', () => fireEvent.keyDown(input(), { key: 'Escape' })],
+        ['on the Cancel button', () => click('Cancel')],
+        [
+            'on the close (X) button in the header',
+            () => {
+                const heading = screen.getByRole('heading', { name: 'Edit Chord' });
+                fireEvent.click(within(heading.parentElement as HTMLElement).getByRole('button'));
+            },
+        ],
+        ['when the backdrop is clicked', (container) => fireEvent.click(container.firstChild as HTMLElement)],
+    ])('cancels %s', (_name, cancel) => {
+        const { container } = openEditor('C');
+        type('D');
+        cancel(container);
         expect(savedChord()).toBe('C');
         expect(store().chordHistory).toEqual([]);
         expect(store().editingBeat).toBeNull();
         expect(screen.queryByRole('textbox')).toBeNull();
-    };
-
-    it('cancels on Escape without saving', () => {
-        openEditor('C');
-        type('D');
-        fireEvent.keyDown(input(), { key: 'Escape' });
-        expectCancelled();
-    });
-
-    it('cancels on the Cancel button', () => {
-        openEditor('C');
-        type('D');
-        click('Cancel');
-        expectCancelled();
-    });
-
-    it('cancels on the close (X) button in the header', () => {
-        openEditor('C');
-        type('D');
-        const heading = screen.getByRole('heading', { name: 'Edit Chord' });
-        fireEvent.click(within(heading.parentElement as HTMLElement).getByRole('button'));
-        expectCancelled();
-    });
-
-    it('cancels when the backdrop is clicked', () => {
-        const { container } = openEditor('C');
-        type('D');
-        fireEvent.click(container.firstChild as HTMLElement);
-        expectCancelled();
     });
 
     it('stays open when the dialog body is clicked', () => {

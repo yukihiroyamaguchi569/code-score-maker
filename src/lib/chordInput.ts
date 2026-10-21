@@ -8,5 +8,4 @@ export const toggleMinor = (chord: string) =>
     });
 
 // A second click of the same button must not stack the same suffix
-export const appendSuffix = (chord: string, suffix: string) =>
-    chord.endsWith(suffix) ? chord : chord + suffix;
+export const appendSuffix = (chord: string, suffix: string) => (chord.endsWith(suffix) ? chord : chord + suffix);

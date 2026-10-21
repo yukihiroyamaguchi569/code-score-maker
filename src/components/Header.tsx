@@ -15,12 +15,8 @@ export const Header = ({ song }: HeaderProps) => {
                             <Music className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-xl font-bold text-white leading-tight">
-                                {song.title}
-                            </h1>
-                            <p className="text-sm text-gray-400">
-                                {song.artist}
-                            </p>
+                            <h1 className="text-xl font-bold text-white leading-tight">{song.title}</h1>
+                            <p className="text-sm text-gray-400">{song.artist}</p>
                         </div>
                     </div>
 

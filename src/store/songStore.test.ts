@@ -19,9 +19,7 @@ const makeSong = (): Song => ({
         {
             id: 's2',
             title: 'A',
-            measures: [
-                { id: 'm3', beats: [{ chord: 'Dm7' }, { chord: '' }, { chord: 'G7' }, { chord: '' }] },
-            ],
+            measures: [{ id: 'm3', beats: [{ chord: 'Dm7' }, { chord: '' }, { chord: 'G7' }, { chord: '' }] }],
         },
     ],
 });

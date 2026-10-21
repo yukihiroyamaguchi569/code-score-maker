@@ -7,7 +7,7 @@ const BeatCell = ({
     beat,
     index,
     sectionId,
-    measureId
+    measureId,
 }: {
     beat: Beat;
     index: number;
@@ -20,21 +20,14 @@ const BeatCell = ({
         <div
             onClick={() => setEditingBeat({ sectionId, measureId, beatIndex: index })}
             className={cn(
-                "relative p-2 border-r border-gray-700 last:border-r-0 min-h-[4rem] flex flex-col justify-center cursor-pointer hover:bg-gray-700/50 transition-colors group",
-                index === 0 && "bg-gray-800/30",
+                'relative p-2 border-r border-gray-700 last:border-r-0 min-h-[4rem] flex flex-col justify-center cursor-pointer hover:bg-gray-700/50 transition-colors group',
+                index === 0 && 'bg-gray-800/30',
             )}
         >
-            <div className={cn(
-                "text-xl font-bold text-center",
-                beat.chord ? "text-white" : "text-gray-600"
-            )}>
-                {beat.chord ? toDisplayChord(beat.chord) : "-"}
+            <div className={cn('text-xl font-bold text-center', beat.chord ? 'text-white' : 'text-gray-600')}>
+                {beat.chord ? toDisplayChord(beat.chord) : '-'}
             </div>
-            {beat.lyric && (
-                <div className="text-xs text-gray-400 text-center mt-1 truncate">
-                    {beat.lyric}
-                </div>
-            )}
+            {beat.lyric && <div className="text-xs text-gray-400 text-center mt-1 truncate">{beat.lyric}</div>}
 
             {/* Beat indicator */}
             <div className="absolute top-1 right-1 text-[10px] text-gray-700 opacity-0 group-hover:opacity-100 transition-opacity">
