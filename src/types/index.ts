@@ -2,18 +2,18 @@ import { z } from 'zod';
 
 // Types are inferred from these schemas so that values read from storage
 // can be validated against exactly the same shape the app uses.
-export const BeatSchema = z.object({
+const BeatSchema = z.object({
     chord: z.string(),
     lyric: z.string().optional(),
     isTentative: z.boolean().optional(),
 });
 
-export const MeasureSchema = z.object({
+const MeasureSchema = z.object({
     id: z.string(),
     beats: z.array(BeatSchema),
 });
 
-export const SectionSchema = z.object({
+const SectionSchema = z.object({
     id: z.string(),
     title: z.string(),
     measures: z.array(MeasureSchema),

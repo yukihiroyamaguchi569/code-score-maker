@@ -9,14 +9,14 @@ export interface KeyValueStorage {
     setItem(key: string, value: string): void;
 }
 
-export const SongEntrySchema = z.object({
+const SongEntrySchema = z.object({
     id: z.string().min(1),
     song: SongSchema,
 });
 
 const hasUniqueIds = (songs: { id: string }[]) => new Set(songs.map((s) => s.id)).size === songs.length;
 
-export const SongLibrarySchema = z
+const SongLibrarySchema = z
     .object({
         version: z.literal(1),
         songs: z.array(SongEntrySchema).min(1),
