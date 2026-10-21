@@ -150,3 +150,140 @@ describe('App: moving between the list and a song', () => {
         expect(document.activeElement).toBe(screen.getByRole('heading', { name: '曲の一覧' }));
     });
 });
+
+describe('App: deleting and duplicating songs in the list', () => {
+    const savedLibrary = (): { songs: { id: string; song: Song }[]; currentSongId: string } =>
+        JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null');
+    const titles = () => songButtons().map((b) => b.textContent);
+    const button = (name: string) => screen.getByRole('button', { name });
+    const confirmBox = () => screen.queryByRole('group', { name: '削除の確認' });
+
+    beforeEach(() => {
+        saveLibrary(
+            [
+                { id: 'a', song: makeSong('First', 'Artist A') },
+                { id: 'b', song: makeSong('Second', 'Artist B') },
+            ],
+            'a',
+        );
+    });
+
+    it('has a duplicate and a delete button for each song', async () => {
+        await renderFreshApp();
+        for (const title of ['First', 'Second']) {
+            expect(button(`「${title}」を複製`)).toBeTruthy();
+            expect(button(`「${title}」を削除`)).toBeTruthy();
+        }
+    });
+
+    it('asks on the screen before deleting, without the browser confirm, and deletes nothing yet', async () => {
+        const confirmSpy = vi.spyOn(window, 'confirm');
+        await renderFreshApp();
+        fireEvent.click(button('「Second」を削除'));
+
+        expect(within(confirmBox()!).getByText('「Second」を削除しますか？')).toBeTruthy();
+        expect(document.activeElement).toBe(button('キャンセル'));
+        expect(confirmSpy).not.toHaveBeenCalled();
+        expect(savedLibrary().songs.map((e) => e.id)).toEqual(['a', 'b']);
+        confirmSpy.mockRestore();
+    });
+
+    it('deletes the song after confirming and keeps it deleted after a reload', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「Second」を削除'));
+        fireEvent.click(button('削除する'));
+
+        expect(titles()).toEqual(['FirstArtist A']);
+        expect(confirmBox()).toBeNull();
+
+        cleanup();
+        await renderFreshApp();
+        expect(titles()).toEqual(['FirstArtist A']);
+    });
+
+    it('changes nothing when the deletion is cancelled', async () => {
+        await renderFreshApp();
+        const before = localStorage.getItem(STORAGE_KEY);
+        fireEvent.click(button('「Second」を削除'));
+        fireEvent.click(button('キャンセル'));
+
+        expect(confirmBox()).toBeNull();
+        expect(titles()).toEqual(['FirstArtist A', 'SecondArtist B']);
+        expect(localStorage.getItem(STORAGE_KEY)).toBe(before);
+    });
+
+    it('shows only one confirmation at a time', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「First」を削除'));
+        fireEvent.click(button('「Second」を削除'));
+
+        expect(screen.getAllByRole('group', { name: '削除の確認' })).toHaveLength(1);
+        expect(within(confirmBox()!).getByText('「Second」を削除しますか？')).toBeTruthy();
+        expect(button('「First」を削除')).toBeTruthy();
+    });
+
+    it('moves the open song to a remaining song when the open song is deleted', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「First」を削除'));
+        fireEvent.click(button('削除する'));
+
+        expect(savedLibrary().currentSongId).toBe('b');
+        fireEvent.click(songButtons()[0]);
+        expect(screen.getByRole('heading', { name: 'Second' })).toBeTruthy();
+    });
+
+    it('says the sample song comes back when the last song is about to be deleted', async () => {
+        saveLibrary([{ id: 'only', song: makeSong('Only', 'Me') }], 'only');
+        await renderFreshApp();
+        fireEvent.click(button('「Only」を削除'));
+
+        expect(within(confirmBox()!).getByText(/サンプルの曲が入ります/)).toBeTruthy();
+    });
+
+    it('does not mention the sample song when other songs remain', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「Second」を削除'));
+
+        expect(within(confirmBox()!).queryByText(/サンプルの曲/)).toBeNull();
+    });
+
+    it('keeps the list working after the last song is deleted: the sample song is listed and opens', async () => {
+        saveLibrary([{ id: 'only', song: makeSong('Only', 'Me') }], 'only');
+        await renderFreshApp();
+        fireEvent.click(button('「Only」を削除'));
+        fireEvent.click(button('削除する'));
+
+        expect(screen.getByRole('heading', { name: '曲の一覧' })).toBeTruthy();
+        expect(songButtons()).toHaveLength(1);
+        expect(titles()[0]).toContain('Someday My Prince Will Come');
+        const { songs, currentSongId } = savedLibrary();
+        expect(songs).toHaveLength(1);
+        expect(songs[0].id).not.toBe('only');
+        expect(currentSongId).toBe(songs[0].id);
+
+        fireEvent.click(songButtons()[0]);
+        expect(screen.getByRole('heading', { name: 'Someday My Prince Will Come' })).toBeTruthy();
+    });
+
+    it('adds a copy right after the original and keeps it after a reload', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「First」を複製'));
+
+        expect(titles()).toEqual(['FirstArtist A', 'First（コピー）Artist A', 'SecondArtist B']);
+        const { songs, currentSongId } = savedLibrary();
+        expect(new Set(songs.map((e) => e.id)).size).toBe(3);
+        expect(songs[0]).toEqual({ id: 'a', song: makeSong('First', 'Artist A') });
+        expect(currentSongId).toBe('a');
+
+        cleanup();
+        await renderFreshApp();
+        expect(titles()).toEqual(['FirstArtist A', 'First（コピー）Artist A', 'SecondArtist B']);
+    });
+
+    it('stays on the list after duplicating', async () => {
+        await renderFreshApp();
+        fireEvent.click(button('「Second」を複製'));
+
+        expect(screen.getByRole('heading', { name: '曲の一覧' })).toBeTruthy();
+    });
+});
