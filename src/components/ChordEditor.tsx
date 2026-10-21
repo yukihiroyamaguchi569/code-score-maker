@@ -24,6 +24,7 @@ export const ChordEditor = () => {
     return <ChordEditorDialog key={`${sectionId}/${measureId}/${beatIndex}`} editingBeat={editingBeat} />;
 };
 
+// eslint-disable-next-line max-lines-per-function -- Most of the length is the dialog's JSX template; splitting it into sub-components is a refactor left to its own change.
 const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
     const { setEditingBeat, updateBeat, addToHistory, chordHistory } = useSongStore();
     const [chordInput, setChordInput] = useState(() => toDisplayChord(readBeatChord(editingBeat)));
@@ -96,7 +97,7 @@ const ChordEditorDialog = ({ editingBeat }: { editingBeat: EditingBeat }) => {
         if (!rootMatch) return;
 
         const currentRoot = rootMatch[0];
-        let newRoot = currentRoot;
+        let newRoot: string;
 
         if (currentRoot.endsWith(acc)) {
             // Toggle off
