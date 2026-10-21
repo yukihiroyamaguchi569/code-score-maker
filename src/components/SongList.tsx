@@ -1,9 +1,11 @@
 import { ChevronRight, Music } from 'lucide-react';
 import { useSongStore } from '../store/songStore';
+import { useFocusOnMount } from '../lib/useFocusOnMount';
 
 export const SongList = () => {
     const songs = useSongStore((state) => state.songs);
     const openSong = useSongStore((state) => state.openSong);
+    const headingRef = useFocusOnMount<HTMLHeadingElement>();
 
     return (
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -11,7 +13,9 @@ export const SongList = () => {
                 <div className="bg-indigo-600 p-2 rounded-lg">
                     <Music className="w-6 h-6 text-white" />
                 </div>
-                <h1 className="text-xl font-bold text-white">曲の一覧</h1>
+                <h1 ref={headingRef} tabIndex={-1} className="text-xl font-bold text-white focus:outline-none">
+                    曲の一覧
+                </h1>
             </div>
             <ul className="divide-y divide-gray-700 rounded-lg border border-gray-700 bg-gray-800">
                 {songs.map(({ id, song }) => (

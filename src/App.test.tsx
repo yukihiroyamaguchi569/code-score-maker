@@ -116,4 +116,13 @@ describe('App: moving between the list and a song', () => {
         await renderFreshApp();
         expect(screen.queryByRole('button', { name: '曲の一覧に戻る' })).toBeNull();
     });
+
+    it('moves focus to the heading of the screen it switches to, both ways', async () => {
+        await renderFreshApp();
+        fireEvent.click(songButtons()[1]);
+        expect(document.activeElement).toBe(screen.getByRole('heading', { name: 'Second' }));
+
+        fireEvent.click(backButton());
+        expect(document.activeElement).toBe(screen.getByRole('heading', { name: '曲の一覧' }));
+    });
 });
