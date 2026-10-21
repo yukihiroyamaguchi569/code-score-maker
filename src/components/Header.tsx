@@ -1,16 +1,25 @@
-import { Music, Settings } from 'lucide-react';
+import { ChevronLeft, Music, Settings } from 'lucide-react';
 import type { Song } from '../types';
 
 interface HeaderProps {
     song: Song;
+    onBack: () => void;
 }
 
-export const Header = ({ song }: HeaderProps) => {
+export const Header = ({ song, onBack }: HeaderProps) => {
     return (
         <header className="sticky top-0 z-50 bg-gray-800 border-b border-gray-700 shadow-md">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     <div className="flex items-center gap-4">
+                        <button
+                            type="button"
+                            onClick={onBack}
+                            aria-label="曲の一覧に戻る"
+                            className="p-2 hover:bg-gray-700 rounded-full transition-colors"
+                        >
+                            <ChevronLeft className="w-5 h-5 text-gray-300" />
+                        </button>
                         <div className="bg-indigo-600 p-2 rounded-lg">
                             <Music className="w-6 h-6 text-white" />
                         </div>
