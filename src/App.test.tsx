@@ -137,6 +137,14 @@ describe('App: moving between the list and a song', () => {
         expect(screen.queryByRole('button', { name: '曲の一覧に戻る' })).toBeNull();
     });
 
+    it('puts the back button after the focused song heading in tab order', async () => {
+        await renderFreshApp();
+        fireEvent.click(songButtons()[1]);
+
+        const heading = screen.getByRole('heading', { name: 'Second' });
+        expect(heading.compareDocumentPosition(backButton()) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
     it('moves focus to the heading of the screen it switches to, both ways', async () => {
         await renderFreshApp();
         fireEvent.click(songButtons()[1]);
