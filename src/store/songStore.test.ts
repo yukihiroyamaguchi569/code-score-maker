@@ -343,3 +343,90 @@ describe('addToHistory', () => {
         expect(store().chordHistory).toBe(before);
     });
 });
+
+describe('screen navigation', () => {
+    beforeEach(() => {
+        storage.data.set(
+            STORAGE_KEY,
+            JSON.stringify({
+                version: 1,
+                songs: [
+                    { id: 'a', song: makeSong() },
+                    { id: 'b', song: { ...makeSong(), title: 'Second' } },
+                ],
+                currentSongId: 'a',
+            }),
+        );
+        useStore = createSongStore({ storage, generateId: sequentialIds() });
+    });
+
+    it('starts on the song list, even when a current song is saved', () => {
+        expect(store().screen).toBe('list');
+    });
+
+    it('openSong shows the song screen for that song', () => {
+        store().openSong('b');
+
+        expect(store().screen).toBe('song');
+        expect(store().currentSongId).toBe('b');
+        expect(currentSong().title).toBe('Second');
+    });
+
+    it('openSong saves the newly opened song id in the version 1 shape, without the screen', () => {
+        store().openSong('b');
+
+        expect(storage.writes).toBe(1);
+        expect(saved()).toEqual({ version: 1, songs: store().songs, currentSongId: 'b' });
+    });
+
+    it('openSong on the already-current song does not write', () => {
+        store().openSong('a');
+
+        expect(store().screen).toBe('song');
+        expect(storage.writes).toBe(0);
+    });
+
+    it('ignores openSong with an unknown id and changes nothing', () => {
+        const songsBefore = store().songs;
+        store().openSong('missing');
+
+        expect(store().songs).toBe(songsBefore);
+        expect(store().screen).toBe('list');
+        expect(store().currentSongId).toBe('a');
+        expect(storage.writes).toBe(0);
+    });
+
+    it('ignores an unknown id while a song is open and keeps showing it', () => {
+        store().openSong('b');
+        store().openSong('missing');
+
+        expect(store().screen).toBe('song');
+        expect(store().currentSongId).toBe('b');
+    });
+
+    it('showSongList goes back to the list and keeps the current song id without writing', () => {
+        store().openSong('b');
+        store().showSongList();
+
+        expect(store().screen).toBe('list');
+        expect(store().currentSongId).toBe('b');
+        expect(storage.writes).toBe(1);
+    });
+
+    it.each([
+        ['openSong', () => store().openSong('b')],
+        ['showSongList', () => store().showSongList()],
+    ])('%s closes an open chord editor', (_label, navigate) => {
+        store().setEditingBeat({ sectionId: 's1', measureId: 'm1', beatIndex: 0 });
+        navigate();
+        expect(store().editingBeat).toBeNull();
+    });
+
+    it('opens on the list again after a reload, with the last opened song as current', () => {
+        store().openSong('b');
+
+        const reloaded = createSongStore({ storage, generateId: sequentialIds() });
+        expect(reloaded.getState().screen).toBe('list');
+        expect(reloaded.getState().currentSongId).toBe('b');
+    });
+});
