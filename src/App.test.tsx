@@ -22,7 +22,11 @@ const withChord = (song: Song, chord: string): Song => ({
 const saveLibrary = (songs: { id: string; song: Song }[], currentSongId: string) =>
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, songs, currentSongId }));
 
-const songButtons = () => within(screen.getByRole('list')).getAllByRole('button');
+// The button that opens each song (each row also has duplicate and delete buttons).
+const songButtons = () =>
+    within(screen.getByRole('list'))
+        .getAllByRole('listitem')
+        .map((item) => within(item).getAllByRole('button')[0]);
 const backButton = () => screen.getByRole('button', { name: '曲の一覧に戻る' });
 
 beforeEach(() => {
