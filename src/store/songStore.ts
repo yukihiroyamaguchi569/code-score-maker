@@ -34,6 +34,8 @@ interface SongState {
     addToHistory: (chord: string) => void;
     openSong: (id: string) => void;
     showSongList: () => void;
+    deleteSong: (id: string) => void;
+    duplicateSong: (id: string) => void;
 }
 
 export interface SongStoreDeps {
@@ -58,6 +60,43 @@ export const selectCurrentSong = (state: Pick<SongState, 'songs' | 'currentSongI
 const createInitialLibrary = (generate: () => string): SongLibrary => {
     const id = generate();
     return { version: 1, songs: [{ id, song: SAMPLE_SONG }], currentSongId: id };
+};
+
+type SongListState = Pick<SongState, 'songs' | 'currentSongId'>;
+
+/**
+ * Removes a song. The saved shape needs at least one song and a current song
+ * that exists, so deleting the last song puts a fresh sample song in its place
+ * (as on the first visit), and deleting the open song makes the song that takes
+ * its place in the list (or the one before it, at the end) the open one.
+ * An unknown id changes nothing.
+ */
+const removeSong = (state: SongListState, id: string, generate: () => string): SongListState => {
+    const index = state.songs.findIndex((entry) => entry.id === id);
+    if (index === -1) return { songs: state.songs, currentSongId: state.currentSongId };
+
+    const songs = state.songs.filter((entry) => entry.id !== id);
+    if (songs.length === 0) {
+        const { songs: initialSongs, currentSongId } = createInitialLibrary(generate);
+        return { songs: initialSongs, currentSongId };
+    }
+    const currentSongId =
+        id === state.currentSongId ? songs[Math.min(index, songs.length - 1)].id : state.currentSongId;
+    return { songs, currentSongId };
+};
+
+/**
+ * Adds a copy of a song right after it, under a new id and with 「（コピー）」 added
+ * to the title. The original and the open song stay as they are. An unknown id
+ * changes nothing.
+ */
+const copySong = (songs: SongEntry[], id: string, generate: () => string): SongEntry[] => {
+    const index = songs.findIndex((entry) => entry.id === id);
+    if (index === -1) return songs;
+
+    const original = songs[index].song;
+    const copy: SongEntry = { id: generate(), song: { ...original, title: `${original.title}（コピー）` } };
+    return [...songs.slice(0, index + 1), copy, ...songs.slice(index + 1)];
 };
 
 const updateBeatInSong = (
@@ -126,6 +165,10 @@ export function createSongStore({ storage, generateId: generate }: SongStoreDeps
             ),
 
         showSongList: () => set({ screen: 'list', editingBeat: null }),
+
+        deleteSong: (id) => set((state) => removeSong(state, id, generate)),
+
+        duplicateSong: (id) => set((state) => ({ songs: copySong(state.songs, id, generate) })),
     }));
 
     // Persist the songs whenever they (or the open song) change. Editing state
