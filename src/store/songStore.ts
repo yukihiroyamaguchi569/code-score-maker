@@ -17,9 +17,13 @@ interface EditingState {
     beatIndex: number;
 }
 
+// Which screen is shown. Not saved: the app always opens on the song list.
+export type Screen = 'list' | 'song';
+
 interface SongState {
     songs: SongEntry[];
     currentSongId: string;
+    screen: Screen;
     editingBeat: EditingState | null;
     chordHistory: string[];
 
@@ -28,6 +32,8 @@ interface SongState {
     updateBeat: (sectionId: string, measureId: string, beatIndex: number, newBeat: Partial<Beat>) => void;
     setEditingBeat: (editingState: EditingState | null) => void;
     addToHistory: (chord: string) => void;
+    openSong: (id: string) => void;
+    showSongList: () => void;
 }
 
 export interface SongStoreDeps {
@@ -89,6 +95,7 @@ export function createSongStore({ storage, generateId: generate }: SongStoreDeps
     const store = create<SongState>((set) => ({
         songs: library.songs,
         currentSongId: library.currentSongId,
+        screen: 'list',
         editingBeat: null,
         chordHistory: [],
 
@@ -109,6 +116,16 @@ export function createSongStore({ storage, generateId: generate }: SongStoreDeps
                 const newHistory = [chord, ...state.chordHistory.filter((c) => c !== chord)].slice(0, MAX_HISTORY);
                 return { chordHistory: newHistory };
             }),
+
+        // An unknown id is ignored so currentSongId always points to a stored song.
+        openSong: (id) =>
+            set((state) =>
+                state.songs.some((entry) => entry.id === id)
+                    ? { currentSongId: id, screen: 'song', editingBeat: null }
+                    : {},
+            ),
+
+        showSongList: () => set({ screen: 'list', editingBeat: null }),
     }));
 
     // Persist the songs whenever they (or the open song) change. Editing state
